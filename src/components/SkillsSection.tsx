@@ -1,12 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useLang } from '../i18n/LanguageContext';
 import { Skill, skills } from '../data/skillsData';
+import { getLayout, KeyDef } from '../data/keyboardLayouts';
 
-const COLS = 6;
-const KEY = 74; // px, key size
-const GAP = 14;
-const KEY_H = 20; // px, key height (extrusion)
+// --- medidas base (px) ---------------------------------------------------
+const KEY = 76;   // tamaño base de tecla (unidad 1)
+const GAP = 10;   // separación entre teclas
+const KEY_H = 22; // altura de la extrusión 3D
 
+// --- utilidades de color -------------------------------------------------
 const hexToRgb = (hex: string): [number, number, number] => {
   const n = parseInt(hex.slice(1), 16);
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
@@ -22,8 +24,6 @@ const mixWithWhite = (hex: string, amt: number) => {
   const [r, g, b] = hexToRgb(hex).map((v) => Math.round(v + (255 - v) * amt));
   return `rgb(${r}, ${g}, ${b})`;
 };
-
-/** Key color + readable logo color for each brand. */
 const keyStyle = (hex: string) => {
   const lum = luminance(hex);
   const color = lum < 0.12 ? mixWithWhite(hex, 0.3) : hex;
@@ -37,50 +37,142 @@ const Logo: React.FC<{ skill: Skill; size: number; fill: string }> = ({ skill, s
   </svg>
 );
 
+// --- helpers de mapeo skill <-> tecla ------------------------------------
+type Lang = 'es' | 'en';
+
+const keyFor = (skill: Skill, lang: Lang): string =>
+  (skill.keyCharByLang?.[lang] ?? skill.keyChar).toUpperCase();
+
+const buildSkillMap = (lang: Lang): Map<string, Skill> => {
+  const map = new Map<string, Skill>();
+  for (const s of skills) {
+    const k = keyFor(s, lang);
+    if (!map.has(k)) map.set(k, s);
+  }
+  return map;
+};
+
+// --- layout helper: extrae las teclas activas con su posición ------------
+interface PlacedKey {
+  keyDef: KeyDef;
+  skill: Skill;
+  /** columna en unidades de tecla */
+  xUnits: number;
+  /** fila (índice) */
+  rowIndex: number;
+}
+
+const placeActiveKeys = (
+  layout: ReturnType<typeof getLayout>,
+  skillMap: Map<string, Skill>
+): PlacedKey[] => {
+  const placed: PlacedKey[] = [];
+  layout.rows.forEach((row, rowIndex) => {
+    let x = row.offset ?? 0;
+    row.keys.forEach((keyDef) => {
+      const skill = skillMap.get(keyDef.base.toUpperCase());
+      if (skill) {
+        placed.push({ keyDef, skill, xUnits: x, rowIndex });
+      }
+      x += (keyDef.w ?? 1);
+    });
+  });
+  return placed;
+};
+
+// --- componente ----------------------------------------------------------
 export const SkillsSection: React.FC = () => {
   const { t, lang } = useLang();
+  const activeLang = (lang === 'es' ? 'es' : 'en') as Lang;
+
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [pressedId, setPressedId] = useState<string | null>(null);
   const [inView, setInView] = useState(false);
   const [scale, setScale] = useState(1);
+
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
 
-  const boardW = COLS * KEY + (COLS - 1) * GAP;
-  const rows = Math.ceil(skills.length / COLS);
-  const boardH = rows * KEY + (rows - 1) * GAP;
-  const diag = (boardW + boardH) * 0.7071;
+  // Layout + mapa de skills según idioma
+  const layout = useMemo(() => getLayout(activeLang), [activeLang]);
+  const skillMap = useMemo(() => buildSkillMap(activeLang), [activeLang]);
 
-  // Only react to the physical keyboard while the section is on screen
+  // Teclas activas con su posición real
+  const placedKeys = useMemo(
+    () => placeActiveKeys(layout, skillMap),
+    [layout, skillMap]
+  );
+
+  // --- Bounding box de las teclas activas (en unidades de tecla) ----------
+  const bbox = useMemo(() => {
+    if (placedKeys.length === 0) {
+      return { minX: 0, minY: 0, maxX: 1, maxY: 1 };
+    }
+    let minX = Infinity;
+    let minY = Infinity;
+    let maxX = -Infinity;
+    let maxY = -Infinity;
+    for (const k of placedKeys) {
+      const w = k.keyDef.w ?? 1;
+      minX = Math.min(minX, k.xUnits);
+      minY = Math.min(minY, k.rowIndex);
+      maxX = Math.max(maxX, k.xUnits + w);
+      maxY = Math.max(maxY, k.rowIndex + 1);
+    }
+    return { minX, minY, maxX, maxY };
+  }, [placedKeys]);
+
+  const unit = KEY + GAP;
+  // Tamaño del bounding box en px (lo que realmente ocupan las teclas)
+  const bboxW = (bbox.maxX - bbox.minX) * unit;
+  const bboxH = (bbox.maxY - bbox.minY) * unit;
+
+  // --- IntersectionObserver ------------------------------------------------
   useEffect(() => {
     const el = sectionRef.current;
     if (!el) return;
-    const io = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.25 });
+    const io = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold: 0.25 }
+    );
     io.observe(el);
     return () => io.disconnect();
   }, []);
 
-  // Fit the keyboard to the available width
+  // --- Escalado responsive -------------------------------------------------
+  // Escala en función del ancho de la columna. Ahora SÍ crece todo lo que
+  // puede, sin tope artificial, para llenar la columna del layout.
   useEffect(() => {
     const el = stageRef.current;
     if (!el) return;
-    const update = () => setScale(Math.min(1, el.clientWidth / (diag + 40)));
+    const update = () => {
+      const padding = 24;
+      const maxByWidth = (el.clientWidth - padding) / bboxW;
+      // Tope generoso para monitores muy anchos
+      const next = Math.min(2.4, Math.max(0.6, maxByWidth));
+      setScale(next);
+    };
     update();
     const ro = new ResizeObserver(update);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [diag]);
+  }, [bboxW, bboxH]);
 
-  // Physical keyboard support
+  // --- Teclado físico ------------------------------------------------------
   useEffect(() => {
     if (!inView) return;
     const isTyping = (el: EventTarget | null) => {
       const node = el as HTMLElement | null;
-      return !!node && (['INPUT', 'TEXTAREA', 'SELECT'].includes(node.tagName) || node.isContentEditable);
+      return (
+        !!node &&
+        (['INPUT', 'TEXTAREA', 'SELECT'].includes(node.tagName) ||
+          node.isContentEditable)
+      );
     };
     const down = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.metaKey || e.altKey || isTyping(e.target)) return;
-      const found = skills.find((s) => s.keyChar === e.key.toUpperCase());
+      const ch = e.key.toUpperCase();
+      const found = skills.find((s) => keyFor(s, activeLang) === ch);
       if (found) {
         setSelectedId(found.id);
         setPressedId(found.id);
@@ -93,11 +185,62 @@ export const SkillsSection: React.FC = () => {
       window.removeEventListener('keydown', down);
       window.removeEventListener('keyup', up);
     };
-  }, [inView]);
+  }, [inView, activeLang]);
 
   const selected = skills.find((s) => s.id === selectedId) ?? null;
-  const sameCategory = selected ? skills.filter((s) => s.category === selected.category) : [];
+  const sameCategory = selected
+    ? skills.filter((s) => s.category === selected.category)
+    : [];
 
+  // --- render de una tecla ------------------------------------------------
+  const renderKey = (p: PlacedKey) => {
+    const { keyDef, skill, xUnits, rowIndex } = p;
+    const w = keyDef.w ?? 1;
+    const width = w * KEY + (w - 1) * GAP;
+    const { color, logo } = keyStyle(skill.color);
+    const logoSize = Math.min(46, KEY * 0.6);
+
+    return (
+      <button
+        key={skill.id}
+        type="button"
+        className="kb-key"
+        aria-label={skill.name}
+        title={skill.name}
+        data-selected={selectedId === skill.id}
+        data-pressed={pressedId === skill.id}
+        onClick={() => setSelectedId(skill.id)}
+        onPointerDown={() => setPressedId(skill.id)}
+        onPointerUp={() => setPressedId(null)}
+        onPointerLeave={() => setPressedId(null)}
+        onPointerCancel={() => setPressedId(null)}
+        style={
+          {
+            position: 'absolute',
+            left: (xUnits - bbox.minX) * unit,
+            top: (rowIndex - bbox.minY) * unit,
+            width,
+            height: KEY,
+            '--ks': `${KEY}px`,
+            '--kh': `${KEY_H}px`,
+            '--c': color,
+          } as React.CSSProperties
+        }
+      >
+        <span className="kb-shadow" />
+        <span className="kb-front" />
+        <span className="kb-right" />
+        <span className="kb-top">
+          <Logo skill={skill} size={logoSize} fill={logo} />
+          <span className="kb-char" style={{ color: logo }}>
+            {keyDef.label}
+          </span>
+        </span>
+      </button>
+    );
+  };
+
+  // --- render --------------------------------------------------------------
   return (
     <section
       id="skills-section"
@@ -107,7 +250,7 @@ export const SkillsSection: React.FC = () => {
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-6 items-center">
 
-          {/* Left: title + description of the pressed key */}
+          {/* Panel izquierdo */}
           <div className="lg:col-span-5 space-y-8">
             <div>
               <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
@@ -118,7 +261,12 @@ export const SkillsSection: React.FC = () => {
               <h2 className="text-5xl sm:text-6xl md:text-7xl font-display font-black text-white tracking-tight uppercase mt-2">
                 {t.skills.title}
               </h2>
-              <p className="text-xs font-mono text-slate-400 tracking-wider mt-1">{t.skills.hint}</p>
+              <p className="text-xs font-mono text-slate-400 tracking-wider mt-1">
+                {t.skills.hint}
+                <span className="ml-2 text-cyan-500">
+                  [{activeLang === 'es' ? 'ES' : 'EN'}]
+                </span>
+              </p>
             </div>
 
             <div
@@ -147,11 +295,13 @@ export const SkillsSection: React.FC = () => {
                   </div>
 
                   <p className="text-slate-300 font-sans text-sm sm:text-base leading-relaxed">
-                    {selected.text[lang]}
+                    {selected.text[activeLang]}
                   </p>
 
                   <div className="pt-3 border-t border-[#232d42] space-y-2">
-                    <p className="text-[11px] font-mono text-slate-400 uppercase tracking-wider">{t.skills.more}</p>
+                    <p className="text-[11px] font-mono text-slate-400 uppercase tracking-wider">
+                      {t.skills.more}
+                    </p>
                     <div className="flex flex-wrap gap-2">
                       {sameCategory.map((s) => (
                         <button
@@ -178,71 +328,45 @@ export const SkillsSection: React.FC = () => {
                     &gt; {t.skills.pressTitle}
                     <span className="inline-block w-2 h-4 bg-cyan-400 ml-1 align-middle animate-pulse"></span>
                   </p>
-                  <p className="text-slate-400 font-sans text-sm leading-relaxed max-w-md">{t.skills.pressText}</p>
+                  <p className="text-slate-400 font-sans text-sm leading-relaxed max-w-md">
+                    {t.skills.pressText}
+                  </p>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Right: isometric keyboard */}
+          {/* Panel derecho: teclado isométrico escalado al bounding box real */}
           <div className="lg:col-span-7">
             <div ref={stageRef} className="w-full flex justify-center">
+              {/*
+                El contenedor "kb-scene" reserva el espacio del bounding box
+                escalado. No depende del layout completo del teclado, sino
+                solo de las teclas que realmente se dibujan.
+              */}
               <div
                 className="kb-scene relative"
-                style={{ width: diag * scale + 20, height: diag * 0.62 * scale + 70 }}
+                style={{
+                  width: bboxW * scale,
+                  height: bboxH * scale + KEY_H * scale + 40,
+                }}
               >
                 <div
                   style={{
                     position: 'absolute',
-                    left: '50%',
-                    top: '50%',
-                    width: boardW,
-                    height: boardH,
-                    marginLeft: -boardW / 2,
-                    marginTop: -boardH / 2,
+                    left: 0,
+                    top: 0,
+                    width: bboxW,
+                    height: bboxH,
                     transform: `scale(${scale})`,
-                    transformOrigin: 'center',
+                    transformOrigin: 'top left',
                   }}
                 >
-                  <div className="kb-board" style={{ width: boardW, height: boardH }}>
-                    {skills.map((skill, i) => {
-                      const col = i % COLS;
-                      const row = Math.floor(i / COLS);
-                      const { color, logo } = keyStyle(skill.color);
-                      return (
-                        <button
-                          key={skill.id}
-                          type="button"
-                          className="kb-key"
-                          aria-label={skill.name}
-                          title={skill.name}
-                          data-selected={selectedId === skill.id}
-                          data-pressed={pressedId === skill.id}
-                          onClick={() => setSelectedId(skill.id)}
-                          onPointerDown={() => setPressedId(skill.id)}
-                          onPointerUp={() => setPressedId(null)}
-                          onPointerLeave={() => setPressedId(null)}
-                          onPointerCancel={() => setPressedId(null)}
-                          style={
-                            {
-                              left: col * (KEY + GAP),
-                              top: row * (KEY + GAP),
-                              '--ks': `${KEY}px`,
-                              '--kh': `${KEY_H}px`,
-                              '--c': color,
-                            } as React.CSSProperties
-                          }
-                        >
-                          <span className="kb-shadow" />
-                          <span className="kb-front" />
-                          <span className="kb-right" />
-                          <span className="kb-top">
-                            <Logo skill={skill} size={40} fill={logo} />
-                            <span className="kb-char" style={{ color: logo }}>{skill.keyChar}</span>
-                          </span>
-                        </button>
-                      );
-                    })}
+                  <div
+                    className="kb-board relative"
+                    style={{ width: bboxW, height: bboxH }}
+                  >
+                    {placedKeys.map((p) => renderKey(p))}
                   </div>
                 </div>
               </div>

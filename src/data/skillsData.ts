@@ -4,7 +4,10 @@ export type SkillCategory = 'languages' | 'frameworks' | 'devops' | 'databases' 
 export interface Skill {
   id: string;
   name: string;
+  /** Carácter por defecto (se usa si keyCharByLang no define uno para el idioma). */
   keyChar: string;
+  /** Override opcional por idioma. Ej: { es: 'Ñ' } para que en ES aparezca en la Ñ. */
+  keyCharByLang?: { es?: string; en?: string };
   category: SkillCategory;
   path: string; // 24x24 viewBox
   color: string;

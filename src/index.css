@@ -210,3 +210,25 @@
   .contact-cell { opacity: 1; }
   .contact-arrow { display: none; }
 }
+
+/* Teclas decorativas (⇥, ⇪, ⇧, Ctrl, Space, etc.) */
+.kb-key--decorative {
+  cursor: default;
+  pointer-events: none;
+}
+.kb-key--decorative .kb-top {
+  opacity: 0.35;
+}
+.kb-char--muted {
+  font-size: 9px;
+  color: #475569;
+  letter-spacing: 0;
+}
+
+/* Asegura que el carácter de tecla escale con el tamaño de la tecla */
+.kb-char {
+  font-size: calc(var(--ks, 76px) * 0.22);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-weight: 800;
+  line-height: 1;
+}
