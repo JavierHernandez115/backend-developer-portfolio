@@ -2,6 +2,7 @@ import React from 'react';
 import { Mail, Download, Phone } from 'lucide-react';
 import { useLang } from '../i18n/LanguageContext';
 import { profile } from '../i18n/translations';
+import { BrandIcon, GITHUB_PATH, LINKEDIN_PATH } from './BrandIcons';
 
 interface CtaSectionProps {
   onInitiateDialogue: () => void;
@@ -63,7 +64,25 @@ export const CtaSection: React.FC<CtaSectionProps> = ({
             href={`mailto:${profile.email}`}
             className="hover:text-cyan-300 transition-colors break-all"
           >
-            // {profile.email}
+            {profile.email}
+          </a>
+          <a
+            href={profile.githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 hover:text-cyan-300 transition-colors"
+          >
+            <BrandIcon d={GITHUB_PATH} size={13} />
+            <span>{t.hero.linkGithub}</span>
+          </a>
+          <a
+            href={profile.linkedinUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 hover:text-cyan-300 transition-colors"
+          >
+            <BrandIcon d={LINKEDIN_PATH} size={13} />
+            <span>{t.hero.linkLinkedin}</span>
           </a>
           <a
             href={profile.phoneHref}

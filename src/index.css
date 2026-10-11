@@ -142,3 +142,71 @@
   opacity: 0.55;
   pointer-events: none;
 }
+
+/* Contact accordion on the portrait.
+   Closed: only the arrow is visible, bottom-left.
+   Hover on the photo: the arrow travels to the right edge dragging the bar open (accordion);
+   on arrival it fades out. On leave it reappears at the right and folds the bar back to the left. */
+.contact-bar {
+  --aw: 3.25rem;
+  --dur: 0.6s;
+  --ease: cubic-bezier(0.65, 0, 0.35, 1);
+  height: 3.75rem;
+}
+@media (min-width: 640px) {
+  .contact-bar { --aw: 4rem; height: 4.5rem; }
+}
+
+.contact-icons {
+  /* closed: only the arrow-wide strip is revealed */
+  clip-path: inset(0 calc(100% - var(--aw)) 0 0);
+  transition: clip-path var(--dur) var(--ease) 0.12s;
+  pointer-events: none !important;
+}
+.contact-cell {
+  opacity: 0;
+  /* closing: stay visible while the bar folds, vanish at the end */
+  transition: opacity 0.15s ease 0.6s;
+}
+
+.contact-arrow {
+  left: 0;
+  width: var(--aw);
+  opacity: 1;
+  /* closing: fade in at the right first, then slide back to the left */
+  transition: left var(--dur) var(--ease) 0.12s, opacity 0.18s ease 0s;
+  pointer-events: none;
+}
+.contact-arrow svg { animation: contact-nudge 1.6s ease-in-out infinite; }
+@keyframes contact-nudge {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(4px); }
+}
+
+.group:hover .contact-icons,
+.contact-bar:focus-within .contact-icons {
+  clip-path: inset(0 0 0 0);
+  transition-delay: 0s;
+  pointer-events: auto !important;
+}
+.group:hover .contact-cell,
+.contact-bar:focus-within .contact-cell {
+  opacity: 1;
+  transition: opacity 0.1s ease 0s;
+}
+.group:hover .contact-arrow,
+.contact-bar:focus-within .contact-arrow {
+  left: calc(100% - var(--aw));
+  opacity: 0;
+  /* opening: slide right, then fade out once it arrives */
+  transition: left var(--dur) var(--ease) 0s, opacity 0.2s ease calc(var(--dur) - 0.05s);
+}
+.group:hover .contact-arrow svg,
+.contact-bar:focus-within .contact-arrow svg { animation: none; }
+
+/* Touch devices have no hover: bar stays open, no arrow */
+@media (hover: none) {
+  .contact-icons { clip-path: inset(0 0 0 0); pointer-events: auto !important; }
+  .contact-cell { opacity: 1; }
+  .contact-arrow { display: none; }
+}

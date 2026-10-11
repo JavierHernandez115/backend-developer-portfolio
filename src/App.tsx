@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Header } from './components/Header';
+import { LanguageSwitcher } from './components/LanguageSwitcher';
 import { HeroSection } from './components/HeroSection';
-import { MarqueeTicker } from './components/MarqueeTicker';
 import { SystemsSection } from './components/SystemsSection';
 import { SkillsSection } from './components/SkillsSection';
 import { ArchitecturalPillars } from './components/ArchitecturalPillars';
@@ -14,7 +13,6 @@ import { ResumeModal } from './components/ResumeModal';
 import { useSystems } from './data/useSystems';
 import { SystemCase } from './types';
 import { useLang } from './i18n/LanguageContext';
-import { LayoutGrid, Cpu } from 'lucide-react';
 
 export default function App() {
   const { t } = useLang();
@@ -40,19 +38,6 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleNavigateSystems = () => {
-    if (currentView !== 'portfolio') {
-      setCurrentView('portfolio');
-      setTimeout(() => {
-        const el = document.getElementById('systems-section');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      }, 50);
-    } else {
-      const el = document.getElementById('systems-section');
-      el?.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   const handleOpenDialogue = (topic = '') => {
     setDialogueTopic(topic);
     setIsDialogueOpen(true);
@@ -66,61 +51,19 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#0c1017] text-[#dfe2ed] selection:bg-cyan-500/30 selection:text-cyan-200">
       
-      {/* View Switcher Floating Pill for Quick Screen Toggling */}
-      <div className="fixed bottom-5 right-5 z-40 bg-[#131924]/95 backdrop-blur-md border border-[#2b3752] rounded-full p-1.5 shadow-2xl flex items-center gap-1 font-mono text-xs">
-        <button
-          onClick={() => {
-            setCurrentView('portfolio');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all cursor-pointer ${
-            currentView === 'portfolio'
-              ? 'bg-cyan-500 text-[#0c1017] font-bold shadow-md shadow-cyan-500/20'
-              : 'text-slate-400 hover:text-white'
-          }`}
-        >
-          <LayoutGrid size={13} />
-          <span>{t.floating.screen1}</span>
-        </button>
-
-        <button
-          onClick={() => {
-            setCurrentView('case-study');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all cursor-pointer ${
-            currentView === 'case-study'
-              ? 'bg-cyan-500 text-[#0c1017] font-bold shadow-md shadow-cyan-500/20'
-              : 'text-slate-400 hover:text-white'
-          }`}
-        >
-          <Cpu size={13} />
-          <span>{t.floating.screen2} {selectedSystem.code.slice(0, 7)}</span>
-        </button>
+      {/* Floating language switcher (always visible) */}
+      <div className="fixed bottom-5 right-5 z-50 rounded-full bg-[#0c1017]/70 backdrop-blur-md shadow-xl shadow-black/40">
+        <LanguageSwitcher />
       </div>
-
-      {/* Global Header */}
-      <Header
-        currentView={currentView}
-        onNavigateHome={handleNavigateHome}
-        onNavigateSystems={handleNavigateSystems}
-        onOpenDialogue={() => handleOpenDialogue()}
-      />
 
       {/* Screen 1: Portfolio View */}
       {currentView === 'portfolio' ? (
         <main>
-          <HeroSection
-            onExploreSystems={handleNavigateSystems}
-            onInitiateDialogue={() => handleOpenDialogue()}
-            onOpenResume={() => setIsResumeOpen(true)}
-          />
-
-          <MarqueeTicker />
-
-          <SystemsSection onSelectSystem={handleSelectSystem} />
+          <HeroSection onOpenResume={() => setIsResumeOpen(true)} />
 
           <SkillsSection />
+
+          <SystemsSection onSelectSystem={handleSelectSystem} />
 
           <ArchitecturalPillars />
 

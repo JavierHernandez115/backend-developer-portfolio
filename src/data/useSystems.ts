@@ -29,7 +29,7 @@ export const useSystems = (): SystemCase[] => {
           specs: { ...s.specs, ...o.specs },
           quote: {
             text: o.quoteText,
-            author: 'Leonardo Hernández',
+            author: 'Javier Hernández',
             role: lang === 'es' ? 'Desarrollador Full Stack' : 'Full Stack Developer',
             location: lang === 'es' ? 'Aguascalientes, México' : 'Aguascalientes, Mexico',
           },

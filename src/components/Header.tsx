@@ -27,7 +27,7 @@ export const Header: React.FC<HeaderProps> = ({
             className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors group cursor-pointer"
           >
             <span className="font-bold text-cyan-400 group-hover:text-cyan-300 hidden sm:inline">{t.header.code}</span>
-            <span className="font-bold text-cyan-400 group-hover:text-cyan-300 sm:hidden">LH</span>
+            <span className="font-bold text-cyan-400 group-hover:text-cyan-300 sm:hidden">JH</span>
             <span className="text-slate-600 hidden xl:inline">|</span>
             <span className="text-slate-400 hidden xl:inline tracking-wider">{t.header.location}</span>
           </button>

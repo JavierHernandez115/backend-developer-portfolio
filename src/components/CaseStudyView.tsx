@@ -89,7 +89,7 @@ export const CaseStudyView: React.FC<CaseStudyViewProps> = ({
     <div className="min-h-screen bg-[#0c1017] text-[#dfe2ed] pb-24">
       
       {/* 1. Sub-nav Breadcrumb & Status bar */}
-      <div className="bg-[#10141d] border-b border-[#232d42] sticky top-14 z-40">
+      <div className="bg-[#10141d] border-b border-[#232d42] sticky top-0 z-40">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 h-12 flex flex-wrap items-center justify-between text-xs font-mono gap-2">
           
           {/* Breadcrumb back */}

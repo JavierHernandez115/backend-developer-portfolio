@@ -4,14 +4,17 @@ export type Lang = 'es' | 'en';
 /*  Personal data (same in both languages)                             */
 /* ------------------------------------------------------------------ */
 export const profile = {
-  fullName: 'Leonardo Javier Hernandez Martinez',
-  firstName: 'LEONARDO',
+  fullName: 'Javier Hernandez Martinez',
+  firstName: 'JAVIER',
   lastName: 'HERNANDEZ',
-  initials: 'LH',
+  initials: 'JH',
   email: 'hernandezmartinezjavier115@gmail.com',
   phone: '+52 449-189-1965',
   phoneHref: 'tel:+524491891965',
   company: 'Max 4 Technologies',
+  // TODO: reemplaza con tus perfiles reales
+  githubUrl: 'https://github.com/TU-USUARIO',
+  linkedinUrl: 'https://www.linkedin.com/in/TU-USUARIO',
 };
 
 /* ------------------------------------------------------------------ */
@@ -23,48 +26,43 @@ const es = {
   floating: { screen1: 'Pantalla 1: Portafolio', screen2: 'Pantalla 2: Caso' },
 
   header: {
-    code: 'LH//DEV.01',
+    code: 'JH//DEV.01',
     location: 'AGUASCALIENTES / MÉXICO',
-    nav01: '// 01.INICIO',
-    nav02: '// 02.PROYECTOS',
-    nav03: '// 03.CONTACTO',
+    nav01: 'Inicio',
+    nav02: 'Proyectos',
+    nav03: 'Contacto',
     available: 'Disponible para nuevas oportunidades',
   },
 
   hero: {
-    eyebrow: '// PRÁCTICA PROFESIONAL',
-    years: '2018—PRESENTE',
+    eyebrow: 'PRÁCTICA PROFESIONAL',
+    years: '2025—PRESENTE',
     role: 'Desarrollo de Software | Backend & Full Stack',
     p1: 'Construyo soluciones eficientes, escalables y de alta calidad: desde APIs y microservicios hasta interfaces de usuario listas para producción.',
     p2a: 'Especializado en Java (Spring Boot), Python (Django) y PHP (Laravel), con interfaces en React y Vue.js. Experiencia en producción con contenedores',
     pill1: 'Docker + Kubernetes',
     p2b: 'y despliegues automatizados con',
-    pill2: 'CI/CD en Jenkins',
+    pill2: 'CI/CD en Jenkins, GitHub Actions y Bitbucket Pipelines',
     p2c: '.',
-    stackLabel: 'STACK PRINCIPAL',
-    contactBtn: 'Iniciar Contacto',
-    exploreBtn: 'Ver Proyectos',
-    linkEmail: '// Correo',
-    linkPhone: '// Teléfono',
-    linkCv: '// CV',
-    cardTag: 'BACKEND & FULL STACK',
+    linkEmail: 'Correo',
+    linkPhone: 'Teléfono',
+    linkCv: 'CV',
+    linkGithub: 'GitHub',
+    linkLinkedin: 'LinkedIn',
+    contactHint: 'CONTACTO',
+    infoLocation: 'UBICACIÓN',
+    infoEducation: 'EDUCACIÓN',
+    infoExperience: 'EXPERIENCIA ACTUAL',
+    infoLanguages: 'IDIOMAS',
+    cardTag: 'ABIERTO A NUEVAS OPORTUNIDADES',
     cardRole: 'FULL STACK DEVELOPER',
     cardCurrentLabel: 'ACTUALMENTE',
     cardCurrentValue: 'MAX 4 TECHNOLOGIES',
-    portraitAlt: 'Leonardo Hernández - Desarrollador de Software Backend & Full Stack',
+    portraitAlt: 'Javier Hernández - Desarrollador de Software Backend & Full Stack',
   },
 
-  marquee: [
-    'ARQUITECTURA DE MICROSERVICIOS',
-    'CONTENEDORES CON DOCKER',
-    'ORQUESTACIÓN CON KUBERNETES',
-    'PIPELINES CI/CD CON JENKINS',
-    'APIS REST',
-    'DESARROLLO FULL STACK',
-  ],
-
   systems: {
-    eyebrowA: '// SECCIÓN 02',
+    eyebrowA: 'SECCIÓN 02',
     eyebrowB: 'EXPEDIENTES DE PROYECTOS',
     title: 'PROYECTOS SELECCIONADOS',
     subtitle: '/ ÍNDICE DE ARQUITECTURA',
@@ -82,7 +80,7 @@ const es = {
   },
 
   skills: {
-    eyebrowA: '// SECCIÓN 03',
+    eyebrowA: 'SECCIÓN 03',
     eyebrowB: 'TECNOLOGÍAS',
     title: 'SKILLS',
     hint: '(pista: presiona una tecla)',
@@ -101,7 +99,7 @@ const es = {
   },
 
   pillars: {
-    eyebrow: '// PILARES DE TRABAJO',
+    eyebrow: 'PILARES DE TRABAJO',
     title: 'Calidad, Escalabilidad y Mejora Continua.',
     text: 'Me apasiona construir soluciones eficientes, escalables y de alta calidad. Refactorizo código legacy, automatizo despliegues y reduzco las inconsistencias entre entornos para que los equipos entreguen con confianza. Soy autodidacta, proactivo y estoy comprometido con el aprendizaje continuo y la colaboración en equipos multidisciplinarios.',
   },
@@ -120,7 +118,7 @@ const es = {
   },
 
   resume: {
-    headerTitle: '// CV PROFESIONAL',
+    headerTitle: 'CV PROFESIONAL',
     download: 'Descargar CV',
     summaryTitle: 'PERFIL PROFESIONAL',
     experienceTitle: 'EXPERIENCIA PROFESIONAL',
@@ -129,11 +127,11 @@ const es = {
     languagesTitle: 'IDIOMAS',
     competenciesTitle: 'COMPETENCIAS CLAVE',
     contactBtn: 'Iniciar Contacto Directo',
-    fileName: 'CV_Leonardo_Hernandez_ES.txt',
+    fileName: 'CV_Javier_Hernandez_ES.txt',
   },
 
   dialogue: {
-    header: '// INICIAR CONTACTO',
+    header: 'INICIAR CONTACTO',
     sentTitle: 'Mensaje Enviado',
     sentText: (name: string, company: string, email: string) =>
       `Gracias, ${name}. He recibido tu consulta para ${company || 'tu organización'}. Revisaré los detalles y responderé a ${email} lo antes posible.`,
@@ -151,19 +149,19 @@ const es = {
     message: 'Mensaje / Contexto *',
     messagePh: 'Describe brevemente el proyecto, el equipo o el reto técnico...',
     defaultMessage: (topic: string) =>
-      `Hola Leonardo, me interesa conversar acerca del proyecto "${topic}" y evaluar una posible colaboración.`,
+      `Hola Javier, me interesa conversar acerca del proyecto "${topic}" y evaluar una posible colaboración.`,
     confidential: 'Confidencialidad garantizada',
     cancel: 'Cancelar',
     send: 'Enviar Mensaje',
   },
 
   rfc: {
-    headerSuffix: '// ESPECIFICACIÓN DE ARQUITECTURA',
+    headerSuffix: 'ESPECIFICACIÓN DE ARQUITECTURA',
     ready: 'LISTO_PROD',
     doc: 'Documento',
     classification: 'Clasificación: Estándar de Arquitectura',
     title: 'RFC: Motor de Telemetría en Streaming Distribuido y Agregador en Tiempo Real',
-    author: 'Autor: Leonardo Hernández',
+    author: 'Autor: Javier Hernández',
     s1: '1. Resumen Ejecutivo (Abstract)',
     s1p: 'Este documento formaliza la topología de streaming para el procesamiento de alta concurrencia de telemetría IoT y métricas de infraestructura. La meta de diseño es asegurar una tasa sostenida de 1.4 millones de eventos por segundo con latencias p99 inferiores a 45 milisegundos bajo fallos estocásticos de infraestructura.',
     s2: '2. Invariantes Arquitectónicas',
@@ -184,11 +182,11 @@ const es = {
     download: 'Descargar RFC Completo (TXT)',
     downloaded: '¡Descargado!',
     copyText: (rfc: string) =>
-      `ESPECIFICACIÓN DE ARQUITECTURA RFC: ${rfc}\nSistema: Telemetry Engine v2.4\nEstado: APROBADO PARA PRODUCCIÓN\nAutor: Leonardo Hernández <${profile.email}>`,
+      `ESPECIFICACIÓN DE ARQUITECTURA RFC: ${rfc}\nSistema: Telemetry Engine v2.4\nEstado: APROBADO PARA PRODUCCIÓN\nAutor: Javier Hernández <${profile.email}>`,
     fileText: (rfc: string) =>
       `========================================================================\n` +
       `RFC: ${rfc} - MOTOR DE TELEMETRÍA EN STREAMING DISTRIBUIDO\n` +
-      `Autor: Leonardo Hernández\n` +
+      `Autor: Javier Hernández\n` +
       `SLA objetivo: 99.995% Uptime | Throughput pico: 1.4M ev/s | Latencia: p99 < 45ms\n` +
       `========================================================================\n\n` +
       `1. RESUMEN\n` +
@@ -217,7 +215,7 @@ const es = {
     throughput: 'Throughput:',
     stackTitle: 'COMPOSICIÓN DEL STACK TÉCNICO',
     stackFallback: 'Componente core del pipeline',
-    blueprintEyebrow: '// ARQUITECTURA DE FLUJO Y TOPOLOGÍA DE DATOS',
+    blueprintEyebrow: 'ARQUITECTURA DE FLUJO Y TOPOLOGÍA DE DATOS',
     blueprintTitle: (name: string) => `Plano de Arquitectura de ${name}`,
     clusterVerified: 'Clúster Verificado',
     impactTitle: 'Impacto del cuello de botella previo:',
@@ -229,7 +227,7 @@ const es = {
     github: 'Ver Repositorio en GitHub',
     rfc: 'Descargar RFC de Arquitectura (TXT)',
     talk: 'Hablar de este Sistema',
-    pagerTitle: 'Proyectos de Leonardo',
+    pagerTitle: 'Proyectos de Javier',
     pagerView: (name: string) => `Ver ${name}`,
     benchTitle: 'Telemetría de Banco de Pruebas (Test Load Suite)',
     totalMessages: 'Mensajes Totales:',
@@ -352,7 +350,7 @@ const es = {
     skills: [
       { label: 'Lenguajes de Programación', value: 'Python, Java, JavaScript, PHP, HTML, CSS' },
       { label: 'Frameworks & Librerías', value: 'Laravel, Django, Spring Boot, Node.js, React, Vue.js, Angular' },
-      { label: 'DevOps & Cloud', value: 'Docker, Kubernetes, Jenkins, Grafana' },
+      { label: 'DevOps & Cloud', value: 'Docker, Kubernetes, Jenkins, GitHub Actions, Bitbucket Pipelines, Grafana' },
       { label: 'Bases de Datos', value: 'MySQL, PostgreSQL, Oracle, MongoDB' },
       { label: 'Control de Versiones', value: 'Git, GitHub, GitLab, Bitbucket' },
       { label: 'Sistemas Operativos', value: 'Linux, Windows' },
@@ -376,48 +374,43 @@ const en: UiDict = {
   floating: { screen1: 'Screen 1: Portfolio', screen2: 'Screen 2: Case' },
 
   header: {
-    code: 'LH//DEV.01',
+    code: 'JH//DEV.01',
     location: 'AGUASCALIENTES / MEXICO',
-    nav01: '// 01.HOME',
-    nav02: '// 02.PROJECTS',
-    nav03: '// 03.CONTACT',
+    nav01: 'Home',
+    nav02: 'Projects',
+    nav03: 'Contact',
     available: 'Available for new opportunities',
   },
 
   hero: {
-    eyebrow: '// PROFESSIONAL PRACTICE',
-    years: '2018—PRESENT',
+    eyebrow: 'PROFESSIONAL PRACTICE',
+    years: '2025—PRESENT',
     role: 'Software Development | Backend & Full Stack',
     p1: 'I build efficient, scalable and high-quality solutions: from APIs and microservices to production-ready user interfaces.',
     p2a: 'Specialized in Java (Spring Boot), Python (Django) and PHP (Laravel), with React and Vue.js interfaces. Production experience with containers using',
     pill1: 'Docker + Kubernetes',
     p2b: 'and automated deployments through',
-    pill2: 'Jenkins CI/CD',
+    pill2: 'CI/CD with Jenkins, GitHub Actions and Bitbucket Pipelines',
     p2c: '.',
-    stackLabel: 'CORE STACK',
-    contactBtn: 'Get in Touch',
-    exploreBtn: 'View Projects',
-    linkEmail: '// Email',
-    linkPhone: '// Phone',
-    linkCv: '// Resume',
-    cardTag: 'BACKEND & FULL STACK',
+    linkEmail: 'Email',
+    linkPhone: 'Phone',
+    linkCv: 'Resume',
+    linkGithub: 'GitHub',
+    linkLinkedin: 'LinkedIn',
+    contactHint: 'CONTACT',
+    infoLocation: 'LOCATION',
+    infoEducation: 'EDUCATION',
+    infoExperience: 'CURRENT ROLE',
+    infoLanguages: 'LANGUAGES',
+    cardTag: 'OPEN TO WORK',
     cardRole: 'FULL STACK DEVELOPER',
     cardCurrentLabel: 'CURRENTLY',
     cardCurrentValue: 'MAX 4 TECHNOLOGIES',
-    portraitAlt: 'Leonardo Hernandez - Backend & Full Stack Software Developer',
+    portraitAlt: 'Javier Hernandez - Backend & Full Stack Software Developer',
   },
 
-  marquee: [
-    'MICROSERVICES ARCHITECTURE',
-    'DOCKER CONTAINERIZATION',
-    'KUBERNETES ORCHESTRATION',
-    'JENKINS CI/CD PIPELINES',
-    'REST APIS',
-    'FULL STACK DEVELOPMENT',
-  ],
-
   systems: {
-    eyebrowA: '// SECTION 02',
+    eyebrowA: 'SECTION 02',
     eyebrowB: 'PROJECT CASE FILES',
     title: 'SELECTED PROJECTS',
     subtitle: '/ ARCHITECTURAL INDEX',
@@ -435,7 +428,7 @@ const en: UiDict = {
   },
 
   skills: {
-    eyebrowA: '// SECTION 03',
+    eyebrowA: 'SECTION 03',
     eyebrowB: 'TECHNOLOGIES',
     title: 'SKILLS',
     hint: '(hint: press a key)',
@@ -454,7 +447,7 @@ const en: UiDict = {
   },
 
   pillars: {
-    eyebrow: '// WORKING PRINCIPLES',
+    eyebrow: 'WORKING PRINCIPLES',
     title: 'Quality, Scalability and Continuous Improvement.',
     text: 'I am passionate about building efficient, scalable and high-quality solutions. I refactor legacy code, automate deployments and reduce inconsistencies between environments so teams can ship with confidence. I am self-taught, proactive and committed to continuous learning and collaboration within multidisciplinary teams.',
   },
@@ -473,7 +466,7 @@ const en: UiDict = {
   },
 
   resume: {
-    headerTitle: '// PROFESSIONAL RESUME',
+    headerTitle: 'PROFESSIONAL RESUME',
     download: 'Download Resume',
     summaryTitle: 'PROFESSIONAL PROFILE',
     experienceTitle: 'PROFESSIONAL EXPERIENCE',
@@ -482,11 +475,11 @@ const en: UiDict = {
     languagesTitle: 'LANGUAGES',
     competenciesTitle: 'KEY COMPETENCIES',
     contactBtn: 'Contact Me Directly',
-    fileName: 'Resume_Leonardo_Hernandez_EN.txt',
+    fileName: 'Resume_Javier_Hernandez_EN.txt',
   },
 
   dialogue: {
-    header: '// GET IN TOUCH',
+    header: 'GET IN TOUCH',
     sentTitle: 'Message Sent',
     sentText: (name: string, company: string, email: string) =>
       `Thank you, ${name}. I have received your inquiry for ${company || 'your organization'}. I will review the details and reply to ${email} as soon as possible.`,
@@ -504,19 +497,19 @@ const en: UiDict = {
     message: 'Message / Context *',
     messagePh: 'Briefly describe the project, the team or the technical challenge...',
     defaultMessage: (topic: string) =>
-      `Hi Leonardo, I'd like to talk about the "${topic}" project and explore a possible collaboration.`,
+      `Hi Javier, I'd like to talk about the "${topic}" project and explore a possible collaboration.`,
     confidential: 'Confidentiality guaranteed',
     cancel: 'Cancel',
     send: 'Send Message',
   },
 
   rfc: {
-    headerSuffix: '// ARCHITECTURE SPECIFICATION',
+    headerSuffix: 'ARCHITECTURE SPECIFICATION',
     ready: 'PROD_READY',
     doc: 'Document',
     classification: 'Classification: Architecture Standard',
     title: 'RFC: Distributed Streaming Telemetry Engine & Real-Time Aggregator',
-    author: 'Author: Leonardo Hernandez',
+    author: 'Author: Javier Hernandez',
     s1: '1. Executive Summary (Abstract)',
     s1p: 'This document formalizes the streaming topology for high-concurrency processing of IoT telemetry and infrastructure metrics. The design goal is to ensure a sustained rate of 1.4 million events per second with p99 latencies below 45 milliseconds under stochastic infrastructure failures.',
     s2: '2. Architectural Invariants',
@@ -537,11 +530,11 @@ const en: UiDict = {
     download: 'Download Full RFC (TXT)',
     downloaded: 'Downloaded!',
     copyText: (rfc: string) =>
-      `RFC ARCHITECTURAL SPECIFICATION: ${rfc}\nSystem: Telemetry Engine v2.4\nStatus: APPROVED FOR PRODUCTION\nAuthor: Leonardo Hernandez <${profile.email}>`,
+      `RFC ARCHITECTURAL SPECIFICATION: ${rfc}\nSystem: Telemetry Engine v2.4\nStatus: APPROVED FOR PRODUCTION\nAuthor: Javier Hernandez <${profile.email}>`,
     fileText: (rfc: string) =>
       `========================================================================\n` +
       `RFC: ${rfc} - DISTRIBUTED STREAMING TELEMETRY ENGINE\n` +
-      `Author: Leonardo Hernandez\n` +
+      `Author: Javier Hernandez\n` +
       `Target SLA: 99.995% Uptime | Peak Throughput: 1.4M ev/s | Latency: p99 < 45ms\n` +
       `========================================================================\n\n` +
       `1. ABSTRACT\n` +
@@ -570,7 +563,7 @@ const en: UiDict = {
     throughput: 'Throughput:',
     stackTitle: 'TECH STACK COMPOSITION',
     stackFallback: 'Core pipeline component',
-    blueprintEyebrow: '// FLOW ARCHITECTURE & DATA TOPOLOGY',
+    blueprintEyebrow: 'FLOW ARCHITECTURE & DATA TOPOLOGY',
     blueprintTitle: (name: string) => `${name} Architecture Blueprint`,
     clusterVerified: 'Cluster Verified',
     impactTitle: 'Impact of the previous bottleneck:',
@@ -582,7 +575,7 @@ const en: UiDict = {
     github: 'View Repository on GitHub',
     rfc: 'Download Architecture RFC (TXT)',
     talk: 'Talk About This System',
-    pagerTitle: "Leonardo's Projects",
+    pagerTitle: "Javier's Projects",
     pagerView: (name: string) => `View ${name}`,
     benchTitle: 'Benchmark Telemetry (Test Load Suite)',
     totalMessages: 'Total Messages:',
@@ -705,7 +698,7 @@ const en: UiDict = {
     skills: [
       { label: 'Programming Languages', value: 'Python, Java, JavaScript, PHP, HTML, CSS' },
       { label: 'Frameworks & Libraries', value: 'Laravel, Django, Spring Boot, Node.js, React, Vue.js, Angular' },
-      { label: 'DevOps & Cloud', value: 'Docker, Kubernetes, Jenkins, Grafana' },
+      { label: 'DevOps & Cloud', value: 'Docker, Kubernetes, Jenkins, GitHub Actions, Bitbucket Pipelines, Grafana' },
       { label: 'Databases', value: 'MySQL, PostgreSQL, Oracle, MongoDB' },
       { label: 'Version Control', value: 'Git, GitHub, GitLab, Bitbucket' },
       { label: 'Operating Systems', value: 'Linux, Windows' },

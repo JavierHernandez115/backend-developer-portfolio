@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useLang } from '../i18n/LanguageContext';
 import { Skill, skills } from '../data/skillsData';
 
-const COLS = 7;
+const COLS = 6;
 const KEY = 74; // px, key size
 const GAP = 14;
 const KEY_H = 20; // px, key height (extrusion)
@@ -141,9 +141,6 @@ export const SkillsSection: React.FC = () => {
                       <div className="flex flex-wrap items-center gap-2 mt-1 font-mono text-[11px]">
                         <span className="px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-500/30 text-cyan-300">
                           {t.skills.categories[selected.category]}
-                        </span>
-                        <span className="text-slate-500">
-                          {t.skills.key}: <kbd className="px-1.5 py-0.5 rounded bg-[#0a0e15] border border-[#2b3752] text-slate-300">{selected.keyChar}</kbd>
                         </span>
                       </div>
                     </div>
