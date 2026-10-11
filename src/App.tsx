@@ -10,13 +10,18 @@ import { CaseStudyView } from './components/CaseStudyView';
 import { TechnicalDialogueModal } from './components/TechnicalDialogueModal';
 import { RfcViewerModal } from './components/RfcViewerModal';
 import { ResumeModal } from './components/ResumeModal';
-import { systemsList } from './data/systemsData';
+import { useSystems } from './data/useSystems';
 import { SystemCase } from './types';
+import { useLang } from './i18n/LanguageContext';
 import { LayoutGrid, Cpu } from 'lucide-react';
 
 export default function App() {
+  const { t } = useLang();
+  const systemsList = useSystems();
   const [currentView, setCurrentView] = useState<'portfolio' | 'case-study'>('portfolio');
-  const [selectedSystem, setSelectedSystem] = useState<SystemCase>(systemsList[0]);
+  const [selectedId, setSelectedId] = useState<string>(systemsList[0].id);
+  // Always derive from the localized list so the case study follows the active language
+  const selectedSystem = systemsList.find((sys) => sys.id === selectedId) ?? systemsList[0];
   const [isDialogueOpen, setIsDialogueOpen] = useState(false);
   const [dialogueTopic, setDialogueTopic] = useState('');
   const [isRfcOpen, setIsRfcOpen] = useState(false);
@@ -24,7 +29,7 @@ export default function App() {
   const [isResumeOpen, setIsResumeOpen] = useState(false);
 
   const handleSelectSystem = (system: SystemCase) => {
-    setSelectedSystem(system);
+    setSelectedId(system.id);
     setCurrentView('case-study');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -74,7 +79,7 @@ export default function App() {
           }`}
         >
           <LayoutGrid size={13} />
-          <span>Pantalla 1: Portafolio</span>
+          <span>{t.floating.screen1}</span>
         </button>
 
         <button
@@ -89,7 +94,7 @@ export default function App() {
           }`}
         >
           <Cpu size={13} />
-          <span>Pantalla 2: Caso {selectedSystem.code.slice(0, 7)}</span>
+          <span>{t.floating.screen2} {selectedSystem.code.slice(0, 7)}</span>
         </button>
       </div>
 
@@ -130,7 +135,7 @@ export default function App() {
             system={selectedSystem}
             onBack={handleNavigateHome}
             onSelectOtherSystem={(sys) => {
-              setSelectedSystem(sys);
+              setSelectedId(sys.id);
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             onOpenDialogue={handleOpenDialogue}

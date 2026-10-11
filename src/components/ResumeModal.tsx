@@ -1,5 +1,7 @@
 import React from 'react';
-import { X, Download, Briefcase, Award, Terminal, Code2 } from 'lucide-react';
+import { X, Download, Briefcase, GraduationCap, Terminal, Code2, Languages, Sparkles } from 'lucide-react';
+import { useLang } from '../i18n/LanguageContext';
+import { profile } from '../i18n/translations';
 
 interface ResumeModalProps {
   isOpen: boolean;
@@ -12,50 +14,67 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
   onClose,
   onInitiateDialogue,
 }) => {
+  const { t } = useLang();
   if (!isOpen) return null;
 
+  const cv = t.cv;
+
   const handleDownloadCv = () => {
+    const line = '========================================================================\n';
+    const text =
+      line +
+      `${profile.fullName.toUpperCase()}\n` +
+      `${cv.headline}\n` +
+      `${profile.phone} | ${profile.email} | ${cv.location}\n` +
+      line +
+      '\n' +
+      `${t.resume.summaryTitle}\n${cv.summary}\n\n` +
+      `${t.resume.experienceTitle}\n` +
+      cv.experience
+        .map(
+          (job) =>
+            `\n${job.role} | ${job.company} | ${job.period}\n` +
+            job.bullets.map((b) => `  - ${b}`).join('\n') +
+            '\n'
+        )
+        .join('') +
+      `\n${t.resume.educationTitle}\n` +
+      cv.education.map((e) => `${e.degree}\n${e.school} | ${e.period}`).join('\n') +
+      `\n\n${t.resume.skillsTitle}\n` +
+      cv.skills.map((s) => `${s.label}: ${s.value}`).join('\n') +
+      `\n\n${t.resume.languagesTitle}\n` +
+      cv.languages.map((l) => `${l.label}: ${l.value}`).join('\n') +
+      `\n\n${t.resume.competenciesTitle}\n` +
+      cv.competencies.join(' • ') +
+      '\n';
+
     const element = document.createElement('a');
-    const file = new Blob(
-      [
-        `========================================================================\n` +
-        `ALEX RIVERA — LEAD & STAFF DISTRIBUTED SYSTEMS ENGINEER\n` +
-        `Location: Madrid, Spain / Global Remote | Email: alex.dev@ejemplo.com\n` +
-        `GitHub: github.com/alexrivera | LinkedIn: linkedin.com/in/alex-rivera-dev\n` +
-        `========================================================================\n\n` +
-        `EXECUTIVE SUMMARY\n` +
-        `Senior distributed systems and backend engineer with 7+ years architecting\n` +
-        `mission-critical backbones in Go, Rust, Kafka, and Kubernetes. Specialized in\n` +
-        `stream processing, Raft consensus, and sub-millisecond tail latency SLAs.\n\n` +
-        `CORE COMPETENCIES\n` +
-        `- High-Throughput Streaming: Apache Kafka, ClickHouse, eBPF, sync.Pool\n` +
-        `- Consensus & State Machines: Raft Protocol, RocksDB LSM, Tokio, Tonic gRPC\n` +
-        `- Edge & Routing: Envoy Proxy, Redis Cluster Lua, Sliding-window rate limiters\n` +
-        `- Fintech Core: Event Sourcing, CQRS, Merkle Tree proofs, ACID isolation\n\n` +
-        `EXPERIENCE HIGHLIGHTS\n` +
-        `- Staff Backend Architect (2022 - Present): Led 1.4M ev/s telemetry platform\n` +
-        `- Senior Systems Engineer (2019 - 2022): Built Raft distributed lease coordinator\n` +
-        `- Infrastructure Engineer (2017 - 2019): Scaled Kubernetes and Envoy proxy mesh\n`
-      ],
-      { type: 'text/plain' }
-    );
+    const file = new Blob([text], { type: 'text/plain;charset=utf-8' });
     element.href = URL.createObjectURL(file);
-    element.download = 'Alex_Rivera_Staff_Engineer_CV.txt';
+    element.download = t.resume.fileName;
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
+    URL.revokeObjectURL(element.href);
   };
+
+  const SectionTitle: React.FC<{ icon: React.ReactNode; label: string }> = ({ icon, label }) => (
+    <div className="flex items-center gap-2 font-mono text-xs text-cyan-400 font-bold">
+      {icon}
+      <span>{label}</span>
+    </div>
+  );
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
       <div className="relative w-full max-w-3xl rounded-2xl bg-[#131924] border border-[#232d42] shadow-2xl overflow-hidden font-sans text-slate-200">
-        
+
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 bg-[#0e131d] border-b border-[#232d42]">
           <div className="flex items-center gap-2 font-mono text-xs">
-            <span className="text-cyan-400 font-bold tracking-wider">// ENGINEERING DOSSIER &amp; CV</span>
+            <span className="text-cyan-400 font-bold tracking-wider">{t.resume.headerTitle}</span>
             <span className="text-slate-600">|</span>
-            <span className="text-slate-400">ALEX RIVERA</span>
+            <span className="text-slate-400">{profile.firstName} {profile.lastName}</span>
           </div>
 
           <button
@@ -67,102 +86,116 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
         </div>
 
         {/* CV Body */}
-        <div className="p-6 max-h-[70vh] overflow-y-auto space-y-6 text-sm bg-[#0a0e15]/60">
-          
+        <div className="p-6 max-h-[70vh] overflow-y-auto space-y-7 text-sm bg-[#0a0e15]/60">
+
           {/* Identity & Headline */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#232d42]">
             <div>
-              <h3 className="text-2xl font-display font-bold text-white">Alex Rivera</h3>
-              <p className="font-mono text-xs text-cyan-400 mt-0.5">
-                Staff Distributed Systems &amp; Backend Engineer
-              </p>
+              <h3 className="text-2xl font-display font-bold text-white">{profile.fullName}</h3>
+              <p className="font-mono text-xs text-cyan-400 mt-0.5">{cv.headline}</p>
               <p className="text-xs text-slate-400 mt-1">
-                Madrid, Spain (Available On-site/Hybrid &amp; Global Distributed Remote)
+                {cv.location} • {profile.phone}
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleDownloadCv}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-[#0c1017] font-mono text-xs font-bold transition-colors cursor-pointer"
-              >
-                <Download size={14} />
-                <span>Descargar PDF</span>
-              </button>
-            </div>
+            <button
+              onClick={handleDownloadCv}
+              className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-[#0c1017] font-mono text-xs font-bold transition-colors cursor-pointer"
+            >
+              <Download size={14} />
+              <span>{t.resume.download}</span>
+            </button>
           </div>
 
-          {/* Core Technical Highlights */}
+          {/* Summary */}
           <div className="space-y-3">
-            <div className="flex items-center gap-2 font-mono text-xs text-cyan-400 font-bold">
-              <Terminal size={14} />
-              <span>LOGROS DE PRODUCCIÓN A GRAN ESCALA</span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="p-3 rounded-lg bg-[#101520] border border-[#232d42]">
-                <div className="font-mono text-lg font-bold text-white">1.4M+ ev/s</div>
-                <div className="text-xs text-slate-400 mt-0.5">Throughput sostenido de telemetría IoT</div>
-              </div>
-
-              <div className="p-3 rounded-lg bg-[#101520] border border-[#232d42]">
-                <div className="font-mono text-lg font-bold text-cyan-300">99.995% SLA</div>
-                <div className="text-xs text-slate-400 mt-0.5">Disponibilidad en clústeres multirregión</div>
-              </div>
-
-              <div className="p-3 rounded-lg bg-[#101520] border border-[#232d42]">
-                <div className="font-mono text-lg font-bold text-emerald-400">&lt; 1.1ms GC</div>
-                <div className="text-xs text-slate-400 mt-0.5">Pausa STW con piscinas zero-alloc</div>
-              </div>
-            </div>
+            <SectionTitle icon={<Terminal size={14} />} label={t.resume.summaryTitle} />
+            <p className="text-xs text-slate-300 leading-relaxed">{cv.summary}</p>
           </div>
 
-          {/* Career Path */}
+          {/* Experience */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2 font-mono text-xs text-cyan-400 font-bold">
-              <Briefcase size={14} />
-              <span>TRAYECTORIA PROFESIONAL</span>
-            </div>
+            <SectionTitle icon={<Briefcase size={14} />} label={t.resume.experienceTitle} />
 
             <div className="space-y-4 font-sans text-xs">
-              <div className="p-4 rounded-lg bg-[#101520] border border-[#232d42] space-y-2">
-                <div className="flex justify-between font-mono text-xs">
-                  <span className="font-bold text-white">Lead &amp; Staff Backend Architect</span>
-                  <span className="text-cyan-400">2021 — Presente</span>
+              {cv.experience.map((job) => (
+                <div key={job.company} className="p-4 rounded-lg bg-[#101520] border border-[#232d42] space-y-2">
+                  <div className="flex flex-col sm:flex-row sm:justify-between gap-1 font-mono text-xs">
+                    <span className="font-bold text-white">
+                      {job.role} <span className="text-slate-500">|</span> <span className="text-cyan-300">{job.company}</span>
+                    </span>
+                    <span className="text-cyan-400">{job.period}</span>
+                  </div>
+                  <ul className="space-y-1.5 text-slate-300">
+                    {job.bullets.map((b, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <span className="text-cyan-400 font-mono mt-0.5">•</span>
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <p className="text-slate-300">
-                  Liderazgo de arquitectura para el pipeline de ingesta en Go y Kafka. Diseño del clúster de ClickHouse con compactaciones automáticas MergeTree y reducción del consumo de memoria en un 64%.
-                </p>
-              </div>
+              ))}
+            </div>
+          </div>
 
-              <div className="p-4 rounded-lg bg-[#101520] border border-[#232d42] space-y-2">
-                <div className="flex justify-between font-mono text-xs">
-                  <span className="font-bold text-white">Senior Distributed Systems Engineer</span>
-                  <span className="text-cyan-400">2019 — 2021</span>
+          {/* Education */}
+          <div className="space-y-3">
+            <SectionTitle icon={<GraduationCap size={14} />} label={t.resume.educationTitle} />
+            {cv.education.map((e) => (
+              <div key={e.degree} className="p-4 rounded-lg bg-[#101520] border border-[#232d42] text-xs space-y-1">
+                <div className="font-bold text-white font-mono">{e.degree}</div>
+                <div className="text-slate-300">
+                  {e.school} <span className="text-slate-500">|</span> <span className="text-cyan-400 font-mono">{e.period}</span>
                 </div>
-                <p className="text-slate-300">
-                  Implementación de motor de consenso Raft en Rust Tokio con backend persistente en RocksDB para coordinación de leases y estados distribuidos.
-                </p>
               </div>
+            ))}
+          </div>
 
-              <div className="p-4 rounded-lg bg-[#101520] border border-[#232d42] space-y-2">
-                <div className="flex justify-between font-mono text-xs">
-                  <span className="font-bold text-white">Backend &amp; Infrastructure Engineer</span>
-                  <span className="text-cyan-400">2017 — 2019</span>
+          {/* Skills */}
+          <div className="space-y-3">
+            <SectionTitle icon={<Code2 size={14} />} label={t.resume.skillsTitle} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {cv.skills.map((s) => (
+                <div key={s.label} className="p-3 rounded-lg bg-[#101520] border border-[#232d42]">
+                  <div className="font-mono text-[11px] text-slate-400">{s.label}</div>
+                  <div className="text-xs text-slate-200 mt-0.5">{s.value}</div>
                 </div>
-                <p className="text-slate-300">
-                  Operación de clústeres Kubernetes bare-metal, proxies Envoy, mallas de servicios gRPC y pipelines CI/CD automatizados.
-                </p>
-              </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Languages */}
+          <div className="space-y-3">
+            <SectionTitle icon={<Languages size={14} />} label={t.resume.languagesTitle} />
+            <div className="flex flex-wrap gap-3 text-xs">
+              {cv.languages.map((l) => (
+                <div key={l.label} className="px-3 py-2 rounded-lg bg-[#101520] border border-[#232d42]">
+                  <span className="font-mono font-bold text-white">{l.label}:</span>{' '}
+                  <span className="text-slate-300">{l.value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Competencies */}
+          <div className="space-y-3">
+            <SectionTitle icon={<Sparkles size={14} />} label={t.resume.competenciesTitle} />
+            <div className="flex flex-wrap gap-2 font-mono text-xs">
+              {cv.competencies.map((c) => (
+                <span key={c} className="px-2.5 py-1 rounded bg-cyan-950/50 border border-cyan-500/30 text-cyan-300">
+                  {c}
+                </span>
+              ))}
             </div>
           </div>
 
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-6 py-4 bg-[#0e131d] border-t border-[#232d42]">
-          <span className="text-xs font-mono text-slate-400">
-            alex.dev@ejemplo.com • +34 600 000 000
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-6 py-4 bg-[#0e131d] border-t border-[#232d42]">
+          <span className="text-xs font-mono text-slate-400 break-all">
+            {profile.email} • {profile.phone}
           </span>
 
           <button
@@ -172,7 +205,7 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
             }}
             className="px-4 py-2 rounded-lg bg-[#18202e] hover:bg-[#222b3d] text-cyan-300 border border-cyan-500/40 text-xs font-mono font-semibold transition-colors cursor-pointer"
           >
-            Iniciar Diálogo Directo
+            {t.resume.contactBtn}
           </button>
         </div>
 

@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { SystemCase, SystemCategory } from '../types';
-import { systemsList } from '../data/systemsData';
+import { useSystems } from '../data/useSystems';
+import { useLang } from '../i18n/LanguageContext';
 
 interface SystemsSectionProps {
   onSelectSystem: (system: SystemCase) => void;
 }
 
 export const SystemsSection: React.FC<SystemsSectionProps> = ({ onSelectSystem }) => {
+  const { t } = useLang();
+  const systemsList = useSystems();
   const [activeCategory, setActiveCategory] = useState<SystemCategory>('ALL');
 
   const categories: SystemCategory[] = [
@@ -31,17 +34,17 @@ export const SystemsSection: React.FC<SystemsSectionProps> = ({ onSelectSystem }
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-12 border-b border-[#232d42]/60">
           <div>
             <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
-              <span className="text-cyan-400 font-semibold">// SECTION 02</span>
+              <span className="text-cyan-400 font-semibold">{t.systems.eyebrowA}</span>
               <span className="text-slate-600">—</span>
-              <span className="tracking-wider">PRODUCTION CASE FILES</span>
+              <span className="tracking-wider">{t.systems.eyebrowB}</span>
             </div>
             
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-display font-black text-white tracking-tight uppercase mt-2">
-              SELECTED SYSTEMS
+              {t.systems.title}
             </h2>
             
             <p className="text-sm font-mono text-slate-400 tracking-wider mt-1">
-              / ARCHITECTURAL INDEX
+              {t.systems.subtitle}
             </p>
           </div>
 
@@ -59,7 +62,7 @@ export const SystemsSection: React.FC<SystemsSectionProps> = ({ onSelectSystem }
                       : 'bg-[#131924] text-slate-400 border border-[#232d42] hover:text-slate-200 hover:border-slate-600'
                   }`}
                 >
-                  [{cat}]
+                  [{t.systems.categories[cat] ?? cat}]
                 </button>
               );
             })}
@@ -126,7 +129,7 @@ export const SystemsSection: React.FC<SystemsSectionProps> = ({ onSelectSystem }
                   {/* Architecture metadata block */}
                   <div className="pt-2 flex items-center justify-between text-xs font-mono">
                     <span className="text-slate-400 uppercase tracking-wider text-[11px]">
-                      ARQUITECTURA:
+                      {t.systems.architecture}
                     </span>
                     <span className="text-cyan-300 font-semibold bg-[#18202e] px-2.5 py-1 rounded border border-[#2b3752]">
                       {system.architectureType}
@@ -136,7 +139,7 @@ export const SystemsSection: React.FC<SystemsSectionProps> = ({ onSelectSystem }
                   {/* Technologies bar */}
                   <div className="pt-2 space-y-2">
                     <div className="flex items-center justify-between text-xs font-mono">
-                      <span className="text-slate-400 text-[11px]">Tecnologías:</span>
+                      <span className="text-slate-400 text-[11px]">{t.systems.technologies}</span>
                       <span className="text-slate-300 text-[11px]">
                         {system.technologies
                           .map((t) => `${t.name} (${t.percentage}%)`)
@@ -169,7 +172,7 @@ export const SystemsSection: React.FC<SystemsSectionProps> = ({ onSelectSystem }
                   className="w-full flex items-center justify-between text-xs font-mono text-slate-300 group-hover:text-cyan-300 transition-colors cursor-pointer"
                 >
                   <span className="font-semibold">
-                    {system.id === 'telemetry-engine' ? 'Ver Arquitectura Completa' : 'Ver Detalle del Proyecto'}
+                    {system.id === 'telemetry-engine' ? t.systems.viewFull : t.systems.viewDetail}
                   </span>
                   <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform text-cyan-400" />
                 </button>

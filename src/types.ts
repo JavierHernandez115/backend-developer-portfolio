@@ -28,6 +28,11 @@ export interface SystemCase {
   stackVersion: string;
   blueprintId: string;
   blueprintScale: string;
+  kicker: string;
+  problemHeading: string;
+  decisionsHeading: string;
+  partitionLabel: string;
+  topologyLabel: string;
   phases: {
     phase: string;
     tech: string;
@@ -75,3 +80,9 @@ export interface SystemCase {
     baseThroughput: number; // e.g. 1424987
   };
 }
+
+/** Language-independent project data; localized text is merged in by useSystems(). */
+export type SystemBase = Omit<
+  SystemCase,
+  'kicker' | 'problemHeading' | 'decisionsHeading' | 'partitionLabel' | 'topologyLabel'
+>;

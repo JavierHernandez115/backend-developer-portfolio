@@ -1,6 +1,6 @@
-import { SystemCase } from '../types';
+import { SystemBase } from '../types';
 
-export const systemsList: SystemCase[] = [
+export const systemsList: SystemBase[] = [
   {
     id: 'telemetry-engine',
     code: 'SYS-041-TELEMETRY',

@@ -14,7 +14,9 @@ import {
   AlertTriangle,
 } from 'lucide-react';
 import { SystemCase } from '../types';
-import { systemsList } from '../data/systemsData';
+import { useSystems } from '../data/useSystems';
+import { useLang } from '../i18n/LanguageContext';
+import { profile } from '../i18n/translations';
 import { TelemetryBlueprintSvg } from './TelemetryBlueprintSvg';
 
 interface CaseStudyViewProps {
@@ -32,6 +34,9 @@ export const CaseStudyView: React.FC<CaseStudyViewProps> = ({
   onOpenDialogue,
   onOpenRfc,
 }) => {
+  const { t } = useLang();
+  const c = t.caseStudy;
+  const systemsList = useSystems();
   // Live benchmark simulation state
   const [isSimulating, setIsSimulating] = useState(true);
   const [throughput, setThroughput] = useState(system.liveMetrics.baseThroughput);
@@ -94,10 +99,10 @@ export const CaseStudyView: React.FC<CaseStudyViewProps> = ({
               className="flex items-center gap-1.5 text-slate-300 hover:text-cyan-300 transition-colors cursor-pointer group"
             >
               <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
-              <span>Volver al Portafolio</span>
+              <span>{c.back}</span>
             </button>
             <span className="text-slate-600">/</span>
-            <span className="text-slate-400">SYSTEMS</span>
+            <span className="text-slate-400">{c.crumb}</span>
             <span className="text-slate-600">/</span>
             <span className="text-cyan-400 font-semibold">{system.code}</span>
           </div>
@@ -124,9 +129,9 @@ export const CaseStudyView: React.FC<CaseStudyViewProps> = ({
           {/* Left: System Title & Summary (8 cols) */}
           <div className="lg:col-span-8 space-y-5">
             <div className="flex items-center gap-2 text-xs font-mono text-cyan-400 uppercase tracking-widest font-semibold">
-              <span>ARQUITECTURA</span>
+              <span>{c.architecture}</span>
               <span className="text-slate-600">•</span>
-              <span>NÚCLEO DE STREAMING DE ALTA CONCURRENCIA</span>
+              <span>{system.kicker}</span>
             </div>
 
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-white tracking-tight">
@@ -140,18 +145,18 @@ export const CaseStudyView: React.FC<CaseStudyViewProps> = ({
             {/* Badges / Metrics */}
             <div className="flex flex-wrap items-center gap-3 pt-2 text-xs font-mono">
               <div className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#131924] border border-[#232d42] text-slate-300">
-                <span className="text-slate-400">Rol:</span>
+                <span className="text-slate-400">{c.role}</span>
                 <span className="text-cyan-300 font-semibold">{system.role}</span>
               </div>
 
               <div className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#131924] border border-[#232d42] text-slate-300">
-                <span className="text-slate-400">Patrón:</span>
+                <span className="text-slate-400">{c.pattern}</span>
                 <span className="text-slate-200">{system.pattern}</span>
               </div>
 
               <div className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#13281c] border border-emerald-500/30 text-emerald-400">
                 <Activity size={14} className="text-emerald-400" />
-                <span>Throughput:</span>
+                <span>{c.throughput}</span>
                 <span className="font-bold">{system.throughput}</span>
               </div>
             </div>
@@ -160,7 +165,7 @@ export const CaseStudyView: React.FC<CaseStudyViewProps> = ({
           {/* Right: Technical Stack Breakdown Box (4 cols) */}
           <div className="lg:col-span-4 rounded-xl bg-[#131924] border border-[#232d42] p-5 space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-[#232d42] font-mono text-xs">
-              <span className="font-bold text-white tracking-wider">COMPOSICIÓN DEL STACK TÉCNICO</span>
+              <span className="font-bold text-white tracking-wider">{c.stackTitle}</span>
               <span className="text-cyan-400">{system.stackVersion}</span>
             </div>
 
@@ -172,7 +177,7 @@ export const CaseStudyView: React.FC<CaseStudyViewProps> = ({
                     <span className="text-cyan-300 font-semibold">{tech.percentage}%</span>
                   </div>
                   <p className="text-[11px] font-mono text-slate-400 leading-tight">
-                    {tech.detail || 'Componente core del pipeline'}
+                    {tech.detail || c.stackFallback}
                   </p>
                 </div>
               ))}
@@ -186,10 +191,10 @@ export const CaseStudyView: React.FC<CaseStudyViewProps> = ({
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-2 border-b border-[#232d42]">
             <div>
               <div className="text-xs font-mono text-cyan-400 font-semibold tracking-wider">
-                // ARQUITECTURA DE FLUJO Y TOPOLOGÍA DE DATOS
+                {c.blueprintEyebrow}
               </div>
               <h2 className="text-2xl font-display font-bold text-white mt-1">
-                Distributed {system.title} Architecture Blueprint
+                {c.blueprintTitle(system.title)}
               </h2>
             </div>
 
@@ -197,7 +202,7 @@ export const CaseStudyView: React.FC<CaseStudyViewProps> = ({
               <span className="px-2 py-1 rounded bg-[#131924] border border-[#232d42] text-cyan-400 font-semibold">
                 ID: {system.blueprintId}
               </span>
-              <span className="text-emerald-400 font-medium">Clúster Verificado</span>
+              <span className="text-emerald-400 font-medium">{c.clusterVerified}</span>
             </div>
           </div>
 
@@ -245,7 +250,7 @@ export const CaseStudyView: React.FC<CaseStudyViewProps> = ({
               </div>
 
               <h3 className="text-xl font-sans font-bold text-white">
-                Colapso de pipelines tradicionales bajo ráfagas no lineales de telemetría IoT
+                {system.problemHeading}
               </h3>
 
               <p className="text-slate-300 font-sans text-sm leading-relaxed">
@@ -254,7 +259,7 @@ export const CaseStudyView: React.FC<CaseStudyViewProps> = ({
 
               <div className="pt-2 space-y-2">
                 <p className="text-xs font-mono text-slate-300 font-semibold tracking-wide">
-                  Impacto del cuello de botella previo:
+                  {c.impactTitle}
                 </p>
                 <ul className="space-y-2 text-xs font-sans text-slate-400">
                   {system.deepDive.problemImpacts.map((imp, idx) => (
@@ -275,7 +280,7 @@ export const CaseStudyView: React.FC<CaseStudyViewProps> = ({
               </div>
 
               <h3 className="text-xl font-sans font-bold text-white">
-                Zero-copy Buffers, Particionamiento Determinista y Micro-Batching
+                {system.decisionsHeading}
               </h3>
 
               <p className="text-slate-300 font-sans text-sm leading-relaxed">
@@ -335,38 +340,38 @@ export const CaseStudyView: React.FC<CaseStudyViewProps> = ({
             {/* Ficha Técnica del Sistema */}
             <div className="rounded-xl bg-[#131924] border border-[#232d42] p-5 space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-[#232d42] font-mono text-xs">
-                <span className="font-bold text-white tracking-wider">Ficha Técnica del Sistema</span>
+                <span className="font-bold text-white tracking-wider">{c.specTitle}</span>
                 <span className="text-slate-400 text-sm">🗂️</span>
               </div>
 
               <div className="space-y-3 font-mono text-xs">
                 <div>
-                  <span className="text-slate-400 block text-[11px]">Identificador:</span>
+                  <span className="text-slate-400 block text-[11px]">{c.specIdentifier}</span>
                   <span className="text-cyan-300 font-bold">{system.specs.identifier}</span>
                 </div>
 
                 <div>
-                  <span className="text-slate-400 block text-[11px]">Entorno de Despliegue:</span>
+                  <span className="text-slate-400 block text-[11px]">{c.specEnv}</span>
                   <span className="text-slate-200">{system.specs.deploymentEnv}</span>
                 </div>
 
                 <div>
-                  <span className="text-slate-400 block text-[11px]">Nodos de Partición Kafka:</span>
+                  <span className="text-slate-400 block text-[11px]">{system.partitionLabel}</span>
                   <span className="text-slate-200">{system.specs.partitionNodes}</span>
                 </div>
 
                 <div>
-                  <span className="text-slate-400 block text-[11px]">Topología ClickHouse:</span>
+                  <span className="text-slate-400 block text-[11px]">{system.topologyLabel}</span>
                   <span className="text-slate-200">{system.specs.clusterTopology}</span>
                 </div>
 
                 <div>
-                  <span className="text-slate-400 block text-[11px]">Ratio de Compresión:</span>
+                  <span className="text-slate-400 block text-[11px]">{c.specCompression}</span>
                   <span className="text-emerald-400 font-bold">{system.specs.compressionRatio}</span>
                 </div>
 
                 <div>
-                  <span className="text-slate-400 block text-[11px]">Monitoreo:</span>
+                  <span className="text-slate-400 block text-[11px]">{c.specMonitoring}</span>
                   <span className="text-slate-200">{system.specs.monitoring}</span>
                 </div>
               </div>
@@ -380,7 +385,7 @@ export const CaseStudyView: React.FC<CaseStudyViewProps> = ({
                   className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded bg-[#18202e] hover:bg-[#202b3d] text-slate-300 hover:text-white font-mono text-xs border border-[#2b3752] transition-colors"
                 >
                   <Github size={13} />
-                  <span>Ver Repositorio en GitHub</span>
+                  <span>{c.github}</span>
                 </a>
 
                 <button
@@ -388,7 +393,7 @@ export const CaseStudyView: React.FC<CaseStudyViewProps> = ({
                   className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded bg-[#18202e] hover:bg-[#202b3d] text-slate-300 hover:text-white font-mono text-xs border border-[#2b3752] transition-colors cursor-pointer"
                 >
                   <FileText size={13} className="text-cyan-400" />
-                  <span>Descargar RFC de Arquitectura (PDF)</span>
+                  <span>{c.rfc}</span>
                 </button>
 
                 <button
@@ -396,7 +401,7 @@ export const CaseStudyView: React.FC<CaseStudyViewProps> = ({
                   className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded bg-[#152336] hover:bg-[#1a2f4a] text-cyan-300 hover:text-white font-mono text-xs border border-cyan-500/40 transition-colors cursor-pointer"
                 >
                   <Mail size={13} className="text-cyan-400" />
-                  <span>Hablar de este Sistema</span>
+                  <span>{c.talk}</span>
                 </button>
               </div>
             </div>
@@ -405,7 +410,7 @@ export const CaseStudyView: React.FC<CaseStudyViewProps> = ({
             <div className="rounded-xl bg-[#131924] border border-[#232d42] p-5 space-y-3">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-cyan-950 border border-cyan-500/50 flex items-center justify-center font-display font-bold text-cyan-300 text-sm">
-                  AR
+                  {profile.initials}
                 </div>
                 <div>
                   <h4 className="font-sans font-bold text-sm text-white">{system.quote.author}</h4>
@@ -427,18 +432,18 @@ export const CaseStudyView: React.FC<CaseStudyViewProps> = ({
               <button
                 onClick={() => onSelectOtherSystem(prevSystem)}
                 className="flex items-center gap-1 text-slate-400 hover:text-cyan-300 transition-colors cursor-pointer"
-                title={`Ver ${prevSystem.title}`}
+                title={c.pagerView(prevSystem.title)}
               >
                 <ChevronLeft size={14} />
                 <span>{prevSystem.code.slice(0, 7)}</span>
               </button>
 
-              <span className="text-slate-400 text-[11px]">Proyectos de Alex</span>
+              <span className="text-slate-400 text-[11px]">{c.pagerTitle}</span>
 
               <button
                 onClick={() => onSelectOtherSystem(nextSystem)}
                 className="flex items-center gap-1 text-slate-400 hover:text-cyan-300 transition-colors cursor-pointer"
-                title={`Ver ${nextSystem.title}`}
+                title={c.pagerView(nextSystem.title)}
               >
                 <span>{nextSystem.code.slice(0, 7)}</span>
                 <ChevronRight size={14} />
@@ -457,7 +462,7 @@ export const CaseStudyView: React.FC<CaseStudyViewProps> = ({
                 <Activity size={16} />
               </span>
               <span className="font-mono text-xs font-bold text-slate-200">
-                Telemetría de Banco de Pruebas (Test Load Suite)
+                {c.benchTitle}
               </span>
             </div>
 
@@ -471,28 +476,28 @@ export const CaseStudyView: React.FC<CaseStudyViewProps> = ({
           {/* 4 Live Metrics Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="p-3 rounded-lg bg-[#131924] border border-[#232d42]">
-              <span className="text-[11px] font-mono text-slate-400 block">Mensajes Totales:</span>
+              <span className="text-[11px] font-mono text-slate-400 block">{c.totalMessages}</span>
               <span className="text-lg md:text-xl font-mono font-bold text-white mt-1 block">
                 {system.liveMetrics.totalMessagesDaily}
               </span>
             </div>
 
             <div className="p-3 rounded-lg bg-[#131924] border border-[#232d42]">
-              <span className="text-[11px] font-mono text-slate-400 block">Latencia Media (p99):</span>
+              <span className="text-[11px] font-mono text-slate-400 block">{c.latency}</span>
               <span className="text-lg md:text-xl font-mono font-bold text-cyan-300 mt-1 block">
                 {latencyP99} ms
               </span>
             </div>
 
             <div className="p-3 rounded-lg bg-[#131924] border border-[#232d42]">
-              <span className="text-[11px] font-mono text-slate-400 block">Uso de CPU Core ({system.technologies[0].name}):</span>
+              <span className="text-[11px] font-mono text-slate-400 block">{c.cpu(system.technologies[0].name)}</span>
               <span className="text-lg md:text-xl font-mono font-bold text-amber-300 mt-1 block">
                 {cpuUsage}%
               </span>
             </div>
 
             <div className="p-3 rounded-lg bg-[#131924] border border-[#232d42]">
-              <span className="text-[11px] font-mono text-slate-400 block">Disponibilidad en Cluster:</span>
+              <span className="text-[11px] font-mono text-slate-400 block">{c.availability}</span>
               <span className="text-lg md:text-xl font-mono font-bold text-emerald-400 mt-1 block">
                 {system.liveMetrics.availability}
               </span>
@@ -503,7 +508,7 @@ export const CaseStudyView: React.FC<CaseStudyViewProps> = ({
           <div className="flex flex-wrap items-center justify-between gap-4 pt-2 font-mono text-xs">
             <div className="flex items-center gap-3">
               <span className="text-slate-400">
-                Simulador de Ingestión:
+                {c.simulator}
               </span>
               <span className="text-cyan-300 font-bold bg-[#131924] px-2.5 py-1 rounded border border-[#232d42]">
                 {throughput.toLocaleString()} ev/s
@@ -511,7 +516,7 @@ export const CaseStudyView: React.FC<CaseStudyViewProps> = ({
               {isSpikeActive && (
                 <span className="flex items-center gap-1 text-amber-400 bg-amber-950/40 px-2 py-0.5 rounded border border-amber-500/30 text-[11px] animate-pulse">
                   <AlertTriangle size={12} />
-                  <span>SPIKE EN CURSO (TRAFFIC BURST)</span>
+                  <span>{c.spike}</span>
                 </span>
               )}
             </div>
@@ -521,10 +526,10 @@ export const CaseStudyView: React.FC<CaseStudyViewProps> = ({
                 onClick={handleTriggerSpike}
                 disabled={isSpikeActive}
                 className="flex items-center gap-1 px-3 py-1.5 rounded bg-cyan-950/40 hover:bg-cyan-900/50 text-cyan-300 border border-cyan-500/40 hover:border-cyan-400 transition-colors disabled:opacity-50 cursor-pointer"
-                title="Inyecta 2.8x tráfico de choque para validar backpressure"
+                title={c.spikeTitle}
               >
                 <Zap size={13} className="text-amber-400" />
-                <span>Inyectar Spike de Tráfico</span>
+                <span>{c.spikeBtn}</span>
               </button>
 
               <button
@@ -532,7 +537,7 @@ export const CaseStudyView: React.FC<CaseStudyViewProps> = ({
                 className="flex items-center gap-1 px-3 py-1.5 rounded bg-[#18202e] hover:bg-[#232d42] text-slate-300 border border-[#2b3752] transition-colors cursor-pointer"
               >
                 {isSimulating ? <Pause size={13} /> : <Play size={13} className="text-emerald-400" />}
-                <span>{isSimulating ? 'Pausar Monitoreo' : 'Reanudar Monitoreo'}</span>
+                <span>{isSimulating ? c.pause : c.resume}</span>
               </button>
             </div>
           </div>

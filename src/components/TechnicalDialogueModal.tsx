@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { X, Send, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { useLang } from '../i18n/LanguageContext';
 
 interface TechnicalDialogueModalProps {
   isOpen: boolean;
@@ -12,19 +13,26 @@ export const TechnicalDialogueModal: React.FC<TechnicalDialogueModalProps> = ({
   onClose,
   initialTopic = '',
 }) => {
+  const { t } = useLang();
+  const d = t.dialogue;
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [company, setCompany] = useState('');
-  const [roleType, setRoleType] = useState('Staff Engineer / Architect');
-  const [stackFocus, setStackFocus] = useState<string[]>(['Golang', 'Apache Kafka', 'Distributed Systems']);
-  const [message, setMessage] = useState(
-    initialTopic ? `Hola Alex, me interesa conversar acerca del sistema ${initialTopic} y evaluar una oportunidad de liderazgo técnico.` : ''
-  );
+  const [roleIdx, setRoleIdx] = useState(0);
+  const [stackFocus, setStackFocus] = useState<string[]>(['Java', 'Python', 'Docker']);
+  const [message, setMessage] = useState('');
   const [submitted, setSubmitted] = useState(false);
+
+  // Pre-fill the message each time the modal opens (or the language changes)
+  useEffect(() => {
+    if (isOpen) {
+      setMessage(initialTopic ? d.defaultMessage(initialTopic) : '');
+    }
+  }, [isOpen, initialTopic, d]);
 
   if (!isOpen) return null;
 
-  const availableStacks = ['Golang', 'Rust Tokio', 'Apache Kafka', 'Distributed Consensus', 'ClickHouse', 'Kubernetes', 'PCI-DSS Fintech'];
+  const availableStacks = ['Java', 'Spring Boot', 'Python', 'Django', 'PHP / Laravel', 'React', 'Vue.js', 'Docker', 'Kubernetes', 'Jenkins CI/CD'];
 
   const toggleStack = (tech: string) => {
     if (stackFocus.includes(tech)) {
@@ -47,7 +55,7 @@ export const TechnicalDialogueModal: React.FC<TechnicalDialogueModalProps> = ({
         <div className="flex items-center justify-between px-6 py-4 bg-[#0e131d] border-b border-[#232d42]">
           <div className="flex items-center gap-2 font-mono text-xs">
             <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-            <span className="text-cyan-400 font-bold tracking-wider">// INITIATE TECHNICAL DIALOGUE</span>
+            <span className="text-cyan-400 font-bold tracking-wider">{d.header}</span>
           </div>
 
           <button
@@ -67,11 +75,11 @@ export const TechnicalDialogueModal: React.FC<TechnicalDialogueModalProps> = ({
               </div>
 
               <h3 className="text-xl font-display font-bold text-white">
-                Technical Brief Dispatched
+                {d.sentTitle}
               </h3>
 
               <p className="text-slate-300 text-sm max-w-md mx-auto leading-relaxed">
-                Gracias, <span className="text-cyan-300 font-semibold">{name}</span>. He recibido tu consulta para <span className="text-white font-medium">{company || 'tu organización'}</span>. Revisaré los detalles de arquitectura y responderé a <span className="text-cyan-300 font-mono text-xs">{email}</span> en menos de 24 horas laborables.
+                {d.sentText(name, company, email)}
               </p>
 
               <div className="pt-4 flex justify-center">
@@ -82,37 +90,37 @@ export const TechnicalDialogueModal: React.FC<TechnicalDialogueModalProps> = ({
                   }}
                   className="px-5 py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-[#0c1017] font-mono text-xs font-bold transition-colors cursor-pointer"
                 >
-                  Volver al Espacio de Trabajo
+                  {d.back}
                 </button>
               </div>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <p className="text-xs font-mono text-slate-400">
-                Canal directo para líderes de ingeniería, VPs y reclutadores que buscan roles de Staff, Principal o Arquitecto de Sistemas Distribuidos.
+                {d.intro}
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-mono text-slate-300 mb-1">Tu Nombre *</label>
+                  <label className="block text-xs font-mono text-slate-300 mb-1">{d.name}</label>
                   <input
                     type="text"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="e.g. Elena Gómez"
+                    placeholder={d.namePh}
                     className="w-full px-3 py-2 rounded bg-[#0a0e15] border border-[#232d42] text-white text-sm focus:border-cyan-400 focus:outline-none font-mono"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono text-slate-300 mb-1">Email Profesional *</label>
+                  <label className="block text-xs font-mono text-slate-300 mb-1">{d.email}</label>
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="elena@tech-scale.io"
+                    placeholder={d.emailPh}
                     className="w-full px-3 py-2 rounded bg-[#0a0e15] border border-[#232d42] text-white text-sm focus:border-cyan-400 focus:outline-none font-mono"
                   />
                 </div>
@@ -120,34 +128,35 @@ export const TechnicalDialogueModal: React.FC<TechnicalDialogueModalProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-mono text-slate-300 mb-1">Organización / Empresa</label>
+                  <label className="block text-xs font-mono text-slate-300 mb-1">{d.company}</label>
                   <input
                     type="text"
                     value={company}
                     onChange={(e) => setCompany(e.target.value)}
-                    placeholder="e.g. Global High-Throughput Inc."
+                    placeholder={d.companyPh}
                     className="w-full px-3 py-2 rounded bg-[#0a0e15] border border-[#232d42] text-white text-sm focus:border-cyan-400 focus:outline-none font-mono"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono text-slate-300 mb-1">Tipo de Rol Objetivo</label>
+                  <label className="block text-xs font-mono text-slate-300 mb-1">{d.roleType}</label>
                   <select
-                    value={roleType}
-                    onChange={(e) => setRoleType(e.target.value)}
+                    value={roleIdx}
+                    onChange={(e) => setRoleIdx(Number(e.target.value))}
                     className="w-full px-3 py-2 rounded bg-[#0a0e15] border border-[#232d42] text-white text-sm focus:border-cyan-400 focus:outline-none font-mono"
                   >
-                    <option value="Staff Engineer / Architect">Staff Software Engineer</option>
-                    <option value="Principal Distributed Systems Architect">Principal Systems Architect</option>
-                    <option value="Head of Infrastructure / Backend Lead">Head of Infrastructure / Backend Lead</option>
-                    <option value="Specialized Technical Advisory">Specialized Architecture Advisory</option>
+                    {d.roles.map((r, i) => (
+                      <option key={r} value={i}>
+                        {r}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
 
               {/* Stack selection tags */}
               <div>
-                <label className="block text-xs font-mono text-slate-300 mb-1.5">Stack Tecnológico Relevante</label>
+                <label className="block text-xs font-mono text-slate-300 mb-1.5">{d.stack}</label>
                 <div className="flex flex-wrap gap-1.5 font-mono text-xs">
                   {availableStacks.map((st) => {
                     const isSelected = stackFocus.includes(st);
@@ -171,13 +180,13 @@ export const TechnicalDialogueModal: React.FC<TechnicalDialogueModalProps> = ({
 
               {/* Message */}
               <div>
-                <label className="block text-xs font-mono text-slate-300 mb-1">Mensaje / Contexto del Reto *</label>
+                <label className="block text-xs font-mono text-slate-300 mb-1">{d.message}</label>
                 <textarea
                   required
                   rows={3}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Describe brevemente el volumen de eventos, el equipo o el problema de latencia..."
+                  placeholder={d.messagePh}
                   className="w-full px-3 py-2 rounded bg-[#0a0e15] border border-[#232d42] text-white text-sm focus:border-cyan-400 focus:outline-none font-sans"
                 />
               </div>
@@ -186,7 +195,7 @@ export const TechnicalDialogueModal: React.FC<TechnicalDialogueModalProps> = ({
               <div className="pt-2 flex items-center justify-between">
                 <div className="flex items-center gap-1.5 text-[11px] font-mono text-slate-400">
                   <ShieldCheck size={14} className="text-cyan-400" />
-                  <span>Confidencialidad garantizada</span>
+                  <span>{d.confidential}</span>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -195,7 +204,7 @@ export const TechnicalDialogueModal: React.FC<TechnicalDialogueModalProps> = ({
                     onClick={onClose}
                     className="px-4 py-2 rounded text-xs font-mono text-slate-400 hover:text-white transition-colors cursor-pointer"
                   >
-                    Cancelar
+                    {d.cancel}
                   </button>
 
                   <button
@@ -203,7 +212,7 @@ export const TechnicalDialogueModal: React.FC<TechnicalDialogueModalProps> = ({
                     className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-[#0c1017] font-mono text-xs font-bold transition-all shadow-md shadow-cyan-500/20 cursor-pointer"
                   >
                     <Send size={13} />
-                    <span>Enviar Brief Técnico</span>
+                    <span>{d.send}</span>
                   </button>
                 </div>
               </div>

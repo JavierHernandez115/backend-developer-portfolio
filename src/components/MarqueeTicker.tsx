@@ -1,14 +1,9 @@
 import React from 'react';
+import { useLang } from '../i18n/LanguageContext';
 
 export const MarqueeTicker: React.FC = () => {
-  const items = [
-    'EVENT-DRIVEN ARCHITECTURES',
-    'HIGH-THROUGHPUT PIPELINES',
-    'ZERO-TRUST API SERVICES',
-    'SUB-MILLISECOND TAIL LATENCIES',
-    'DETERMINISTIC FAULT DOMAINS',
-    'DISTRIBUTED CONSENSUS RAFT',
-  ];
+  const { t } = useLang();
+  const items = t.marquee;
 
   return (
     <div className="w-full bg-[#090d14] border-y border-[#232d42] py-3 overflow-hidden select-none">

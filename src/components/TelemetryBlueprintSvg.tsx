@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Play, Pause, ZoomIn, Info, ShieldCheck, Cpu } from 'lucide-react';
+import { useLang } from '../i18n/LanguageContext';
 
 interface BlueprintSvgProps {
   systemTitle?: string;
@@ -10,47 +11,13 @@ export const TelemetryBlueprintSvg: React.FC<BlueprintSvgProps> = ({
   systemTitle = 'Distributed Telemetry Engine Architecture',
   isLive = true,
 }) => {
+  const { t } = useLang();
+  const b = t.blueprint;
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [animationActive, setAnimationActive] = useState<boolean>(true);
   const [zoomLevel, setZoomLevel] = useState<number>(1);
 
-  const nodeDetails: Record<string, { title: string; tech: string; spec: string; latency: string; throughput: string }> = {
-    sources: {
-      title: 'Heterogeneous Telemetry Sources',
-      tech: 'IoT Edge Fleet & K8s DaemonSets',
-      spec: '18,500 connected gateways emitting Protobuf v3 frames over persistent TLS 1.3 streams.',
-      latency: 'RTT: 18ms',
-      throughput: '1.4M ev/sec aggregate',
-    },
-    ingestion: {
-      title: 'Zero-Allocation Ingestion Tier',
-      tech: 'Go 1.23 + eBPF XDP + sync.Pool',
-      spec: 'Stateless pods fronted by Cilium eBPF balancer. Reusable memory byte pools eliminate GC pressure.',
-      latency: 'Processing: 0.8ms p99',
-      throughput: '120k ev/sec per pod',
-    },
-    kafka: {
-      title: 'Apache Kafka Partition Stream',
-      tech: 'KRaft Quorum + NVMe Log Segments',
-      spec: '24 physical partitions sharded by murmur3(tenant_id:device_uuid). ZSTD level 3 compression.',
-      latency: 'Commit Lag: 0.02ms',
-      throughput: '850 MB/s sustained',
-    },
-    consumers: {
-      title: 'Micro-Batching Consumer Fleet',
-      tech: 'Go Tokio/Worker Goroutines',
-      spec: 'Dynamic flush trigger: 65,536 records or 400ms window. Strict manual offset commits.',
-      latency: 'Batch Drain: 14ms',
-      throughput: '50k records/batch',
-    },
-    clickhouse: {
-      title: 'ClickHouse Clustered Storage',
-      tech: 'ReplacingMergeTree + ClickHouse Keeper',
-      spec: '3 Shards x 2 Replicas on AWS NVMe i3en. Columnar ZSTD compression ratio 8.4x.',
-      latency: 'Agg p95: 18ms / 10B rows',
-      throughput: '99.999% durability',
-    },
-  };
+  const nodeDetails: Record<string, { title: string; tech: string; spec: string; latency: string; throughput: string }> = b.nodes;
 
   return (
     <div className="relative w-full bg-[#0a0e15] border border-[#232d42] rounded-lg overflow-hidden select-none">
@@ -62,26 +29,26 @@ export const TelemetryBlueprintSvg: React.FC<BlueprintSvgProps> = ({
             diagrams/engine_distributed_stream.svg
           </span>
           <span className="text-slate-600 hidden sm:inline">|</span>
-          <span className="text-slate-400 hidden sm:inline">Scale: Blueprint Reference • ClickHouse MergeTree Engine</span>
+          <span className="text-slate-400 hidden sm:inline">{b.scale}</span>
         </div>
 
         <div className="flex items-center gap-2">
           <button
             onClick={() => setAnimationActive(!animationActive)}
             className="flex items-center gap-1 px-2.5 py-1 rounded bg-[#18202e] hover:bg-[#232d42] text-slate-300 hover:text-cyan-300 border border-[#2b3752] transition-colors"
-            title="Toggle stream packet flow animation"
+            title={b.toggleTitle}
           >
             {animationActive ? <Pause size={12} className="text-cyan-400" /> : <Play size={12} className="text-emerald-400" />}
-            <span>{animationActive ? 'Pause Stream' : 'Play Stream'}</span>
+            <span>{animationActive ? b.pauseStream : b.playStream}</span>
           </button>
 
           <button
             onClick={() => setZoomLevel(zoomLevel === 1 ? 1.25 : 1)}
             className="flex items-center gap-1 px-2.5 py-1 rounded bg-[#18202e] hover:bg-[#232d42] text-slate-300 hover:text-cyan-300 border border-[#2b3752] transition-colors"
-            title="Zoom blueprint schematic"
+            title={b.zoomTitle}
           >
             <ZoomIn size={12} />
-            <span>{zoomLevel === 1 ? 'Zoom 125%' : 'Reset 100%'}</span>
+            <span>{zoomLevel === 1 ? 'Zoom 125%' : b.zoomReset}</span>
           </button>
         </div>
       </div>
@@ -373,7 +340,7 @@ export const TelemetryBlueprintSvg: React.FC<BlueprintSvgProps> = ({
                   Background Merge Engine &amp; ZSTD Compression (Ratio: 8.4x)
                 </text>
                 <text x="12" y="36" fill="#94a3b8" fontSize="9">
-                  AggregatingMergeTree Materialized Views • Latencia de agregación p95: 18ms sobre 10,000,000,000 filas
+                  {b.svgAgg}
                 </text>
               </g>
             </g>
@@ -387,15 +354,15 @@ export const TelemetryBlueprintSvg: React.FC<BlueprintSvgProps> = ({
               <g transform="translate(14, 40)">
                 <rect x="0" y="0" width="322" height="60" rx="4" fill="#0d121c" stroke="#223046" />
                 <text x="12" y="20" fill="#e2e8f0" fontSize="10" fontWeight="bold">Real-Time Grafana Dashboards &amp; Alerting</text>
-                <text x="12" y="36" fill="#94a3b8" fontSize="9">Sub-second slicing por tenant, región y anomalías de latencia</text>
-                <text x="12" y="50" fill="#4ade80" fontSize="9">Throughput de consulta: 450 QPS simultáneos</text>
+                <text x="12" y="36" fill="#94a3b8" fontSize="9">{b.svgSlicing}</text>
+                <text x="12" y="50" fill="#4ade80" fontSize="9">{b.svgQps}</text>
               </g>
 
               <g transform="translate(14, 112)">
                 <rect x="0" y="0" width="322" height="64" rx="4" fill="#0d121c" stroke="#223046" />
                 <text x="12" y="20" fill="#fbbf24" fontSize="10" fontWeight="bold">Automated Anomaly Detector (eBPF Probes)</text>
-                <text x="12" y="36" fill="#94a3b8" fontSize="9">Detección de outliers en ventana rodante de 60 segundos</text>
-                <text x="12" y="50" fill="#38bdf8" fontSize="9">Disparo directo a PagerDuty &amp; Slack Ops</text>
+                <text x="12" y="36" fill="#94a3b8" fontSize="9">{b.svgOutliers}</text>
+                <text x="12" y="50" fill="#38bdf8" fontSize="9">{b.svgPager}</text>
               </g>
             </g>
 
@@ -423,7 +390,7 @@ export const TelemetryBlueprintSvg: React.FC<BlueprintSvgProps> = ({
               onClick={() => setSelectedNode(null)}
               className="text-xs font-mono text-slate-400 hover:text-white px-2 py-1 rounded bg-[#1c2333]"
             >
-              Cerrar [ESC]
+              {b.close}
             </button>
           </div>
 
@@ -433,10 +400,10 @@ export const TelemetryBlueprintSvg: React.FC<BlueprintSvgProps> = ({
 
           <div className="flex flex-wrap gap-4 mt-3 pt-2 border-t border-[#232d42] text-xs font-mono">
             <span className="text-slate-400">
-              Métrica de Latencia: <span className="text-emerald-400 font-semibold">{nodeDetails[selectedNode]?.latency}</span>
+              {b.latencyMetric} <span className="text-emerald-400 font-semibold">{nodeDetails[selectedNode]?.latency}</span>
             </span>
             <span className="text-slate-400">
-              Throughput Efectivo: <span className="text-cyan-400 font-semibold">{nodeDetails[selectedNode]?.throughput}</span>
+              {b.effectiveThroughput} <span className="text-cyan-400 font-semibold">{nodeDetails[selectedNode]?.throughput}</span>
             </span>
           </div>
         </div>
@@ -446,9 +413,9 @@ export const TelemetryBlueprintSvg: React.FC<BlueprintSvgProps> = ({
       <div className="px-4 py-2 bg-[#0d121c] border-t border-[#232d42] flex flex-wrap items-center justify-between text-[11px] font-mono text-slate-400">
         <span className="flex items-center gap-1.5 text-slate-400">
           <ShieldCheck size={13} className="text-emerald-400" />
-          <span>Verificación Formal de Invariantes: Passed (TLA+ Model Checked)</span>
+          <span>{b.footerVerified}</span>
         </span>
-        <span className="text-slate-400">Click en cualquier caja para inspeccionar telemetría de componente</span>
+        <span className="text-slate-400">{b.footerHint}</span>
       </div>
     </div>
   );
