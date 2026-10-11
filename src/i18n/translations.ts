@@ -81,6 +81,25 @@ const es = {
     viewDetail: 'Ver Detalle del Proyecto',
   },
 
+  skills: {
+    eyebrowA: '// SECCIÓN 03',
+    eyebrowB: 'TECNOLOGÍAS',
+    title: 'SKILLS',
+    hint: '(pista: presiona una tecla)',
+    pressTitle: 'Presiona una tecla',
+    pressText: 'Usa tu teclado o haz clic en cualquier tecla para ver cómo uso cada tecnología.',
+    key: 'Tecla',
+    more: 'Más en esta categoría',
+    categories: {
+      languages: 'Lenguajes',
+      frameworks: 'Frameworks',
+      devops: 'DevOps & Cloud',
+      databases: 'Bases de Datos',
+      versioning: 'Control de Versiones',
+      os: 'Sistemas Operativos',
+    } as Record<string, string>,
+  },
+
   pillars: {
     eyebrow: '// PILARES DE TRABAJO',
     title: 'Calidad, Escalabilidad y Mejora Continua.',
@@ -413,6 +432,25 @@ const en: UiDict = {
     technologies: 'Technologies:',
     viewFull: 'View Full Architecture',
     viewDetail: 'View Project Details',
+  },
+
+  skills: {
+    eyebrowA: '// SECTION 03',
+    eyebrowB: 'TECHNOLOGIES',
+    title: 'SKILLS',
+    hint: '(hint: press a key)',
+    pressTitle: 'Press a key',
+    pressText: 'Use your keyboard or click any key to see how I use each technology.',
+    key: 'Key',
+    more: 'More in this category',
+    categories: {
+      languages: 'Languages',
+      frameworks: 'Frameworks',
+      devops: 'DevOps & Cloud',
+      databases: 'Databases',
+      versioning: 'Version Control',
+      os: 'Operating Systems',
+    },
   },
 
   pillars: {

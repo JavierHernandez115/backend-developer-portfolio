@@ -26,14 +26,15 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={onNavigateHome}
             className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors group cursor-pointer"
           >
-            <span className="font-bold text-cyan-400 group-hover:text-cyan-300">{t.header.code}</span>
-            <span className="text-slate-600 hidden sm:inline">|</span>
+            <span className="font-bold text-cyan-400 group-hover:text-cyan-300 hidden sm:inline">{t.header.code}</span>
+            <span className="font-bold text-cyan-400 group-hover:text-cyan-300 sm:hidden">LH</span>
+            <span className="text-slate-600 hidden xl:inline">|</span>
             <span className="text-slate-400 hidden xl:inline tracking-wider">{t.header.location}</span>
           </button>
         </div>
 
         {/* Middle: Navigation links */}
-        <nav className="flex items-center gap-3 sm:gap-8">
+        <nav className="flex items-center gap-2.5 sm:gap-8 text-[10px] sm:text-xs whitespace-nowrap">
           <button
             onClick={onNavigateHome}
             className={`transition-colors cursor-pointer ${

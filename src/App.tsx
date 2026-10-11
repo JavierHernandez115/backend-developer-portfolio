@@ -3,6 +3,7 @@ import { Header } from './components/Header';
 import { HeroSection } from './components/HeroSection';
 import { MarqueeTicker } from './components/MarqueeTicker';
 import { SystemsSection } from './components/SystemsSection';
+import { SkillsSection } from './components/SkillsSection';
 import { ArchitecturalPillars } from './components/ArchitecturalPillars';
 import { CtaSection } from './components/CtaSection';
 import { Footer } from './components/Footer';
@@ -118,6 +119,8 @@ export default function App() {
           <MarqueeTicker />
 
           <SystemsSection onSelectSystem={handleSelectSystem} />
+
+          <SkillsSection />
 
           <ArchitecturalPillars />
 
